@@ -9,7 +9,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="371dp"
-        android:layout_height="670dp"
+        android:layout_height="690dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -253,13 +253,14 @@
                 android:id="@+id/button4"
                 android:layout_width="300dp"
                 android:layout_height="48dp"
-                android:layout_marginBottom="27dp"
+                android:layout_marginBottom="44dp"
                 android:backgroundTint="@color/DarkBlue"
                 android:elevation="6dp"
                 android:text="@string/registro"
                 app:cornerRadius="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.507"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <Switch
@@ -272,6 +273,18 @@
                 android:text="Activar avisos"
                 app:layout_constraintBottom_toTopOf="@+id/textView12"
                 app:layout_constraintStart_toEndOf="@+id/radioGroup" />
+
+            <Button
+                android:id="@+id/button5"
+                android:layout_width="300dp"
+                android:layout_height="48dp"
+                android:text="@string/inicio_sesion"
+                android:backgroundTint="@color/DarkBlue"
+                app:cornerRadius="20dp"
+                android:elevation="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/button4"
+                app:layout_constraintStart_toStartOf="@+id/button4" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

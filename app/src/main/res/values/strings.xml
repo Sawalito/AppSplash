@@ -6,7 +6,7 @@
     <string name="login">Sign In</string>
     <string name="registro">Registrarse</string>
     <string name="email">email</string>
-    <string name="conocer">¿Cómo nos conocio?</string>
+    <string name="conocer">¿Cómo nos conoció?</string>
     <string name="amigos">amigos</string>
     <string name="trabajo">trabajo</string>
     <string name="publicidad">publicidad</string>
@@ -16,4 +16,6 @@
     <string name="fec_nac">Fecha de nacimiento</string>
     <string name="numero">Número celular</string>
     <string name="in">55</string>
+    <string name="inicio_sesion">Iniciar sesión</string>
+    <string name="morse">M O R S E</string>
 </resources>
