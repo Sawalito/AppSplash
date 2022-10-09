@@ -15,12 +15,16 @@ import android.widget.Toast;
 import com.example.mysplash.json.MyInfo;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Registro extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
+        List<MyInfo> list =new ArrayList<MyInfo>();
         Button button5 = findViewById(R.id.button5);
         Button button4 = findViewById(R.id.button4);
         EditText usuario = findViewById(R.id.usuario);
@@ -33,7 +37,7 @@ public class Registro extends AppCompatActivity {
         RadioButton r2 = findViewById(R.id.radioButton4);
         EditText num = findViewById(R.id.num);
         EditText fec = findViewById(R.id.fec);
-        MyInfo info= new MyInfo();
+
 
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +49,7 @@ public class Registro extends AppCompatActivity {
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MyInfo info= new MyInfo();
                 info.setUsuario(String.valueOf(usuario.getText()));
                 info.setPassword(String.valueOf(pswd.getText()));
                 info.setCorreo(String.valueOf(mail.getText()));
@@ -73,17 +78,17 @@ public class Registro extends AppCompatActivity {
                 }
                 info.setCel(String.valueOf(num.getText()));
                 info.setDate(String.valueOf(fec.getText()));
-                Object2Json(info);
+                List2Json(info,list);
             }
         });
 
     }
-    public void Object2Json(MyInfo info){
+    public void Objet2Json(MyInfo info){
         Gson gson =null;
         String json= null;
         String mensaje = null;
         gson =new Gson();
-        json=gson.toJson(info);
+        json = gson.toJson(info);
         if (json != null) {
             Log.d(TAG, json);
             mensaje = "object2Json OK";
@@ -91,5 +96,22 @@ public class Registro extends AppCompatActivity {
             mensaje = "Error object2Json";
         }
         Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
+    }
+    public void List2Json(MyInfo info,List<MyInfo> list){
+        Gson gson =null;
+        String json= null;
+        String mensaje = null;
+        gson =new Gson();
+        list.add(info);
+        json =gson.toJson(list, ArrayList.class);
+        if (json == null)
+        {
+            Log.d(TAG, "Error json");
+        }
+        else
+        {
+            Log.d(TAG, json);
+        }
+        Toast.makeText(getApplicationContext(), "Ok", Toast.LENGTH_LONG).show();
     }
 }
