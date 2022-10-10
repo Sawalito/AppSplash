@@ -1,6 +1,8 @@
 package com.example.mysplash.json;
 
-public class MyInfo {
+import java.io.Serializable;
+
+public class MyInfo implements Serializable {
     private String usuario;
     private String password;
     private String correo;

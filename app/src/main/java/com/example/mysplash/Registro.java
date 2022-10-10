@@ -15,18 +15,25 @@ import android.widget.Toast;
 import com.example.mysplash.json.MyInfo;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Registro extends AppCompatActivity {
+    private Button button4;
     private static final String TAG = "MainActivity";
+    public static final String archivo = "archivo.json";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
         List<MyInfo> list =new ArrayList<MyInfo>();
+        button4 = findViewById(R.id.button4);
         Button button5 = findViewById(R.id.button5);
-        Button button4 = findViewById(R.id.button4);
         EditText usuario = findViewById(R.id.usuario);
         EditText pswd = findViewById(R.id.pswd);
         EditText mail = findViewById(R.id.email);
@@ -100,7 +107,6 @@ public class Registro extends AppCompatActivity {
     public void List2Json(MyInfo info,List<MyInfo> list){
         Gson gson =null;
         String json= null;
-        String mensaje = null;
         gson =new Gson();
         list.add(info);
         json =gson.toJson(list, ArrayList.class);
@@ -111,7 +117,32 @@ public class Registro extends AppCompatActivity {
         else
         {
             Log.d(TAG, json);
+            writeFile(json);
         }
         Toast.makeText(getApplicationContext(), "Ok", Toast.LENGTH_LONG).show();
+    }
+    private boolean writeFile(String text){
+        File file =null;
+        FileOutputStream fileOutputStream =null;
+        try{
+            file=getFile();
+            fileOutputStream = new FileOutputStream( file );
+            fileOutputStream.write( text.getBytes(StandardCharsets.UTF_8) );
+            fileOutputStream.close();
+            Log.d(TAG, "Hola");
+            return true;
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    private File getFile(){
+        return new File(getDataDir(),archivo);
     }
 }
