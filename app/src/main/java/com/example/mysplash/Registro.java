@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.mysplash.json.MyInfo;
@@ -26,7 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import com.example.mysplash.*;
+
 
 public class Registro extends AppCompatActivity {
     private Button button4;
@@ -40,6 +42,10 @@ public class Registro extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
+        Spinner spinner = findViewById(R.id.spinner);
+        String [] opciones = {"Norte","Sur","Centro"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, opciones);
+        spinner.setAdapter(adapter);
         button4 = findViewById(R.id.button4);
         Button button5 = findViewById(R.id.button5);
         EditText usuario = findViewById(R.id.usuario);
@@ -68,6 +74,7 @@ public class Registro extends AppCompatActivity {
                 info.setUsuario(String.valueOf(usuario.getText()));
                 info.setPassword(Metodos.bytesToHex(Metodos.createSha1(String.valueOf(pswd.getText()))));
                 info.setCorreo(String.valueOf(mail.getText()));
+                info.setRegion(spinner.getSelectedItem().toString());
                 usr = String.valueOf(usuario.getText());
                 String[] box = new String[3];
                 if(box1.isChecked()==true){

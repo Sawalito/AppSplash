@@ -10,6 +10,16 @@ public class MyInfo implements Serializable {
     private Boolean sexo;
     private String date;
     private String cel;
+    private String region;
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
 
     public MyInfo() {
     }
