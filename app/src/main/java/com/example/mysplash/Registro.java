@@ -14,24 +14,32 @@ import android.widget.Toast;
 
 import com.example.mysplash.json.MyInfo;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import com.example.mysplash.*;
 
 public class Registro extends AppCompatActivity {
     private Button button4;
     private static final String TAG = "MainActivity";
     public static final String archivo = "archivo.json";
+    String json = null;
+    String usr = null;
+    String password=null;
+    public static List<MyInfo> list =new ArrayList<MyInfo>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
-        List<MyInfo> list =new ArrayList<MyInfo>();
         button4 = findViewById(R.id.button4);
         Button button5 = findViewById(R.id.button5);
         EditText usuario = findViewById(R.id.usuario);
@@ -44,8 +52,8 @@ public class Registro extends AppCompatActivity {
         RadioButton r2 = findViewById(R.id.radioButton4);
         EditText num = findViewById(R.id.num);
         EditText fec = findViewById(R.id.fec);
-
-
+        Read();
+        json2List(json);
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,8 +66,9 @@ public class Registro extends AppCompatActivity {
             public void onClick(View view) {
                 MyInfo info= new MyInfo();
                 info.setUsuario(String.valueOf(usuario.getText()));
-                info.setPassword(String.valueOf(pswd.getText()));
+                info.setPassword(Metodos.bytesToHex(Metodos.createSha1(String.valueOf(pswd.getText()))));
                 info.setCorreo(String.valueOf(mail.getText()));
+                usr = String.valueOf(usuario.getText());
                 String[] box = new String[3];
                 if(box1.isChecked()==true){
                     box[0]="opcion1";
@@ -89,6 +98,15 @@ public class Registro extends AppCompatActivity {
             }
         });
 
+    }
+    public int usuarios(List<MyInfo> list,MyInfo myInfo){
+      int bandera = 0;
+        for(MyInfo datos : list){
+            if(datos.getUsuario().equals(myInfo.getUsuario())){
+                bandera = 1;
+            }
+        }
+      return bandera;
     }
     public void Objet2Json(MyInfo info){
         Gson gson =null;
@@ -145,4 +163,54 @@ public class Registro extends AppCompatActivity {
     private File getFile(){
         return new File(getDataDir(),archivo);
     }
+
+    public boolean Read(){
+        if(!isFileExits()){
+            return false;
+        }
+        File file = getFile();
+        FileInputStream fileInputStream = null;
+        byte[] bytes = null;
+        bytes = new byte[(int)file.length()];
+        try {
+            fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bytes);
+            json=new String(bytes);
+            Log.d(TAG,json);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private boolean isFileExits( )
+    {
+        File file = getFile( );
+        if( file == null )
+        {
+            return false;
+        }
+        return file.isFile() && file.exists();
+    }
+    public void json2List( String json )
+    {
+        Gson gson = null;
+        String mensaje = null;
+        if (json == null || json.length() == 0)
+        {
+            Toast.makeText(getApplicationContext(), "Error json null or empty", Toast.LENGTH_LONG).show();
+            return;
+        }
+        gson = new Gson();
+        Type listType = new TypeToken<ArrayList<MyInfo>>(){}.getType();
+        list = gson.fromJson(json, listType);
+        if (list == null || list.size() == 0 )
+        {
+            Toast.makeText(getApplicationContext(), "Error list is null or empty", Toast.LENGTH_LONG).show();
+            return;
+        }
+    }
+
 }

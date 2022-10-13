@@ -41,8 +41,8 @@ public class activity_login extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 usr = String.valueOf(usuario.getText());
-                pswd =  String.valueOf(pswds.getText());
-                acceso();
+                pswd = Metodos.bytesToHex(Metodos.createSha1(String.valueOf(pswds.getText())));
+                acceso(usr , pswd);
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +106,7 @@ public class activity_login extends AppCompatActivity {
         }
         return file.isFile() && file.exists();
     }
-    public void acceso(){
+    public void acceso(String usr , String pswd){
         int i=0;
         for(MyInfo myInfo : list){
             if(myInfo.getUsuario().equals(usr)&&myInfo.getPassword().equals(pswd)){

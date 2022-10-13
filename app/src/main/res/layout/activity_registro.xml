@@ -9,7 +9,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="371dp"
-        android:layout_height="690dp"
+        android:layout_height="715dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -125,18 +125,19 @@
                 android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/conocer"
-                app:layout_constraintBottom_toTopOf="@+id/checkBox2"
                 app:layout_constraintEnd_toEndOf="@+id/checkBox3"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/checkBox1" />
+                app:layout_constraintStart_toStartOf="@+id/checkBox1"
+                app:layout_constraintTop_toBottomOf="@+id/email" />
 
             <CheckBox
                 android:id="@+id/checkBox3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="48dp"
-                android:layout_marginBottom="240dp"
+                android:layout_marginEnd="56dp"
+                android:layout_marginBottom="276dp"
                 android:text="@string/trabajo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -145,8 +146,8 @@
                 android:id="@+id/checkBox2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="240dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="276dp"
                 android:text="@string/amigos"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/checkBox3" />
@@ -156,14 +157,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="2dp"
-                android:layout_marginBottom="164dp"
+                android:layout_marginBottom="276dp"
                 android:text="@string/publicidad"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/checkBox2"
-                app:layout_constraintHorizontal_bias="0.734"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView9"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintHorizontal_bias="0.842"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/textView10"
@@ -204,7 +203,7 @@
                 android:id="@+id/textView11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="36dp"
                 android:text="@string/fec_nac"
                 app:layout_constraintEnd_toEndOf="@+id/fec"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -220,6 +219,7 @@
                 android:hint="dd/mm/aa"
                 android:inputType="date"
                 android:padding="15dp"
+                android:textColorHint="#546E7A"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.132"
                 app:layout_constraintStart_toStartOf="parent"
@@ -229,7 +229,7 @@
                 android:id="@+id/textView12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="36dp"
                 android:text="@string/numero"
                 app:layout_constraintEnd_toEndOf="@+id/num"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -245,7 +245,7 @@
                 android:hint="@string/in"
                 android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.551"
+                app:layout_constraintHorizontal_bias="0.285"
                 app:layout_constraintStart_toEndOf="@+id/fec"
                 app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
@@ -267,13 +267,58 @@
                 android:id="@+id/button5"
                 android:layout_width="300dp"
                 android:layout_height="48dp"
-                android:text="@string/inicio_sesion"
                 android:backgroundTint="@color/DarkBlue"
-                app:cornerRadius="20dp"
                 android:elevation="6dp"
+                android:text="@string/inicio_sesion"
+                app:cornerRadius="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/button4"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/button4" />
+
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:minHeight="48dp"
+                android:text="@string/notificaciones"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.565"
+                app:layout_constraintStart_toEndOf="@+id/radioGroup"
+                app:layout_constraintTop_toBottomOf="@+id/checkBox3" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="@string/notificaciones"
+                app:layout_constraintEnd_toEndOf="@+id/switch1"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/switch1"
+                app:layout_constraintTop_toBottomOf="@+id/checkBox3" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="56dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/switch1" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/region"
+                app:layout_constraintEnd_toStartOf="@+id/spinner"
+                app:layout_constraintHorizontal_bias="0.15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
