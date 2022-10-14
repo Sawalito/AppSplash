@@ -1,9 +1,11 @@
 package com.example.mysplash;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.PatternsCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PatternMatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -37,6 +39,8 @@ public class Registro extends AppCompatActivity {
     String json = null;
     String usr = null;
     String password=null;
+    String email = null;
+    public static boolean activado;
     public static List<MyInfo> list =new ArrayList<MyInfo>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +75,13 @@ public class Registro extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 MyInfo info= new MyInfo();
-                info.setUsuario(String.valueOf(usuario.getText()));
-                info.setPassword(Metodos.bytesToHex(Metodos.createSha1(String.valueOf(pswd.getText()))));
-                info.setCorreo(String.valueOf(mail.getText()));
-                info.setRegion(spinner.getSelectedItem().toString());
-                usr = String.valueOf(usuario.getText());
+
+                usr= String.valueOf(usuario.getText());
+                password = String.valueOf(pswd.getText());
+                email= String.valueOf(mail.getText());
+
                 String[] box = new String[3];
+
                 if(box1.isChecked()==true){
                     box[0]="opcion1";
                 }else{
@@ -92,25 +97,76 @@ public class Registro extends AppCompatActivity {
                 }else{
                     box[2]="no";
                 }
-                info.setConocer(box);
                 if(r1.isChecked()==true){
-                    info.setSexo(Boolean.TRUE);
+                    activado=true;
                 }
                 if(r2.isChecked()==true){
-                    info.setSexo(Boolean.FALSE);
+                    activado=true;
                 }
-                info.setCel(String.valueOf(num.getText()));
-                info.setDate(String.valueOf(fec.getText()));
-                List2Json(info,list);
+                //Validaciones
+                if(usr.equals("")||password.equals("")||email.equals("")){
+                    Log.d(TAG,"vacio");
+                    Log.d(TAG,usr);
+                    Log.d(TAG,password);
+                    Log.d(TAG,email);
+                    Toast.makeText(getApplicationContext(), "LLena los campos", Toast.LENGTH_LONG).show();
+
+                }else{
+                    if(validarEmail(email)){
+                        if(list.isEmpty()){
+                            Log.d(TAG,"lleno");
+                            info.setUsuario(usr);
+                            info.setPassword(Metodos.bytesToHex(Metodos.createSha1(String.valueOf(pswd.getText()))));
+                            info.setCel(String.valueOf(num.getText()));
+                            info.setDate(String.valueOf(fec.getText()));
+                            info.setConocer(box);
+                            info.setCorreo(String.valueOf(mail.getText()));
+                            info.setRegion(spinner.getSelectedItem().toString());
+                            info.setSexo(activado);
+                            List2Json(info,list);
+                        }else{
+                            if(usuarios(list,usr)){
+                                Log.d(TAG,"esta ocupado mano");
+                                Toast.makeText(getApplicationContext(), "El nombre de usuario está ocupado, cambialo", Toast.LENGTH_LONG).show();
+                            }else{
+                                info.setUsuario(usr);
+                                info.setPassword(Metodos.bytesToHex(Metodos.createSha1(String.valueOf(pswd.getText()))));
+                                info.setCel(String.valueOf(num.getText()));
+                                info.setDate(String.valueOf(fec.getText()));
+                                info.setConocer(box);
+                                info.setCorreo(String.valueOf(mail.getText()));
+                                info.setRegion(spinner.getSelectedItem().toString());
+                                info.setSexo(activado);
+                                List2Json(info,list);
+                            }
+                        }
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Introdusca un correo válido", Toast.LENGTH_LONG).show();
+                    }
+
+                }
             }
         });
 
     }
-    public int usuarios(List<MyInfo> list,MyInfo myInfo){
-      int bandera = 0;
-        for(MyInfo datos : list){
-            if(datos.getUsuario().equals(myInfo.getUsuario())){
-                bandera = 1;
+    public boolean validarEmail(String email){
+        boolean bandera;
+        if(email.isEmpty()){
+            bandera=false;
+        }else{
+            if(PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()){
+                bandera=true;
+            }else{
+                bandera=false;
+            }
+        }
+        return bandera;
+    }
+    public boolean usuarios(List<MyInfo> list,String usr){
+        boolean bandera = false;
+        for(MyInfo informacion : list){
+            if(informacion.getUsuario().equals(usr)){
+                bandera=true;
             }
         }
       return bandera;
@@ -170,7 +226,6 @@ public class Registro extends AppCompatActivity {
     private File getFile(){
         return new File(getDataDir(),archivo);
     }
-
     public boolean Read(){
         if(!isFileExits()){
             return false;
@@ -191,7 +246,6 @@ public class Registro extends AppCompatActivity {
         }
         return true;
     }
-
     private boolean isFileExits( )
     {
         File file = getFile( );
