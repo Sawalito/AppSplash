@@ -25,7 +25,7 @@ import java.util.List;
 public class activity_login extends AppCompatActivity {
     private List<MyInfo> list;
     public static String TAG = "mensaje";
-    String json = null;
+    public static String json = null;
     public static String usr,pswd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,15 +108,19 @@ public class activity_login extends AppCompatActivity {
     }
     public void acceso(String usr , String pswd){
         int i=0;
-        for(MyInfo myInfo : list){
-            if(myInfo.getUsuario().equals(usr)&&myInfo.getPassword().equals(pswd)){
-                Intent intent = new Intent(activity_login.this, menu.class);
-                startActivity(intent);
-                i=1;
+        if(usr.equals("")||pswd.equals("")){
+            Toast.makeText(getApplicationContext(), "Llena los campos", Toast.LENGTH_LONG).show();
+        }else{
+            for(MyInfo myInfo : list){
+                if(myInfo.getUsuario().equals(usr)&&myInfo.getPassword().equals(pswd)){
+                    Intent intent = new Intent(activity_login.this, menu.class);
+                    startActivity(intent);
+                    i=1;
+                }
             }
-        }
-        if(i==0){
-            Toast.makeText(getApplicationContext(), "El usuario o contraseña son incorrectos", Toast.LENGTH_LONG).show();
+            if(i==0){
+                Toast.makeText(getApplicationContext(), "El usuario o contraseña son incorrectos", Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

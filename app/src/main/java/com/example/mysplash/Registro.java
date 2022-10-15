@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.mysplash.json.MyInfo;
@@ -40,6 +41,7 @@ public class Registro extends AppCompatActivity {
     String usr = null;
     String password=null;
     String email = null;
+    public static boolean sw= false;
     public static boolean activado;
     public static List<MyInfo> list =new ArrayList<MyInfo>();
     @Override
@@ -55,6 +57,7 @@ public class Registro extends AppCompatActivity {
         EditText usuario = findViewById(R.id.usuario);
         EditText pswd = findViewById(R.id.pswd);
         EditText mail = findViewById(R.id.email);
+        EditText nombre = findViewById(R.id.nombre);
         CheckBox box1 = findViewById(R.id.checkBox1);
         CheckBox box2 = findViewById(R.id.checkBox2);
         CheckBox box3 = findViewById(R.id.checkBox3);
@@ -62,6 +65,7 @@ public class Registro extends AppCompatActivity {
         RadioButton r2 = findViewById(R.id.radioButton4);
         EditText num = findViewById(R.id.num);
         EditText fec = findViewById(R.id.fec);
+        Switch switch1 = findViewById(R.id.switch1);
         Read();
         json2List(json);
         button5.setOnClickListener(new View.OnClickListener() {
@@ -103,12 +107,24 @@ public class Registro extends AppCompatActivity {
                 if(r2.isChecked()==true){
                     activado=true;
                 }
+                if(switch1.isChecked()){
+                    sw= true;
+                }
                 //Validaciones
                 if(usr.equals("")||password.equals("")||email.equals("")){
                     Log.d(TAG,"vacio");
                     Log.d(TAG,usr);
                     Log.d(TAG,password);
                     Log.d(TAG,email);
+                    if(usr.equals("")){
+                        Toast.makeText(getApplicationContext(), "LLena el campo de usuario", Toast.LENGTH_LONG).show();
+                    }
+                    if(password.equals("")){
+                        Toast.makeText(getApplicationContext(), "Introduce una contraseña", Toast.LENGTH_LONG).show();
+                    }
+                    if(email.equals("")){
+                        Toast.makeText(getApplicationContext(), "Introduce un correo", Toast.LENGTH_LONG).show();
+                    }
                     Toast.makeText(getApplicationContext(), "LLena los campos", Toast.LENGTH_LONG).show();
 
                 }else{
@@ -123,6 +139,8 @@ public class Registro extends AppCompatActivity {
                             info.setCorreo(String.valueOf(mail.getText()));
                             info.setRegion(spinner.getSelectedItem().toString());
                             info.setSexo(activado);
+                            info.setActivado(sw);
+                            info.setNombre(String.valueOf(nombre.getText()));
                             List2Json(info,list);
                         }else{
                             if(usuarios(list,usr)){
@@ -137,6 +155,8 @@ public class Registro extends AppCompatActivity {
                                 info.setCorreo(String.valueOf(mail.getText()));
                                 info.setRegion(spinner.getSelectedItem().toString());
                                 info.setSexo(activado);
+                                info.setActivado(sw);
+                                info.setNombre(String.valueOf(nombre.getText()));
                                 List2Json(info,list);
                             }
                         }
@@ -273,5 +293,4 @@ public class Registro extends AppCompatActivity {
             return;
         }
     }
-
 }

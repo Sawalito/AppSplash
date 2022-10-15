@@ -11,6 +11,24 @@ public class MyInfo implements Serializable {
     private String date;
     private String cel;
     private String region;
+    private Boolean activado;
+    private String nombre;
+
+    public Boolean getActivado() {
+        return activado;
+    }
+
+    public void setActivado(Boolean activado) {
+        this.activado = activado;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
     public String getRegion() {
         return region;

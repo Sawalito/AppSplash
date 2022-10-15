@@ -20,4 +20,5 @@
     <string name="morse">M O R S E</string>
     <string name="notificaciones">Notificaciones</string>
     <string name="region">Región</string>
+    <string name="name">Nombre</string>
 </resources>

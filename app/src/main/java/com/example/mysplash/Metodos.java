@@ -40,4 +40,5 @@ public class Metodos {
         }
         return new String(hexChars);
     }
+
 }
