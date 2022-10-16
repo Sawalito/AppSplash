@@ -4,6 +4,7 @@ import static com.example.mysplash.Registro.archivo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -81,11 +82,12 @@ public class Metodos {
         }
         return bandera;
     }
-    //Metodos JSON
+    //Metodos JSON el getFile tiene bug
     //Metodo de llenado
     public static void fillInfo(MyInfo info){
         info.setUsuario(Registro.usr);
-        info.setPassword(bytesToHex(createSha1(Registro.password)));
+        String pass = Registro.password + Registro.usr;
+        info.setPassword(bytesToHex(createSha1(pass)));
         info.setCel(Registro.numero);
         info.setDate(Registro.fecha);
         info.setConocer(Registro.box);
@@ -97,6 +99,16 @@ public class Metodos {
     }
     public static void vaciaJson(String json){
         json = null;
+    }
+    //Metodos encuentra contrasena
+    public static void encuentra(String cadena){
+        for(MyInfo info: Olvide.list){
+            if(activity_login.usr.equals(info.getUsuario())){
+                cadena = "El usuario existe, recuerde la contraseña";
+            }else{
+                cadena = "El usuario no existe, recuerde todo";
+            }
+        }
     }
 
 }

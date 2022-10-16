@@ -27,21 +27,28 @@ public class activity_login extends AppCompatActivity {
     public static String TAG = "mensaje";
     public static String json = null;
     public static String usr,pswd;
+    private Button button1, button2, button3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Button button2 = findViewById(R.id.button2);
-        Button button1 = findViewById(R.id.button);
+        button2 = findViewById(R.id.button2);
+        button1 = findViewById(R.id.button);
+        button3 = findViewById(R.id.button3);
         EditText usuario = findViewById(R.id.user);
         EditText pswds = findViewById(R.id.pswds);
         Read();
         json2List(json);
+        if (json == null || json.length() == 0){
+            button1.setEnabled(false);
+            button3.setEnabled(false);
+        }
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 usr = String.valueOf(usuario.getText());
-                pswd = Metodos.bytesToHex(Metodos.createSha1(String.valueOf(pswds.getText())));
+                pswd = String.valueOf(pswds.getText())+ usr;
+                pswd = Metodos.bytesToHex(Metodos.createSha1(pswd));
                 acceso(usr , pswd);
             }
         });
@@ -52,7 +59,19 @@ public class activity_login extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                usr = String.valueOf(usuario.getText());
+                pswd = Metodos.bytesToHex(Metodos.createSha1(String.valueOf(pswds.getText())));
+                if(usr.equals("")||pswd.equals("")){
+                    Toast.makeText(getApplicationContext(), "Llena los campos", Toast.LENGTH_LONG).show();
+                }else{
+                    Intent intent = new Intent(activity_login.this,Olvide.class);
+                    startActivity(intent);
+                }
+            }
+        });
     }
     public boolean Read(){
         if(!isFileExits()){
@@ -80,6 +99,7 @@ public class activity_login extends AppCompatActivity {
         String mensaje = null;
         if (json == null || json.length() == 0)
         {
+
             Toast.makeText(getApplicationContext(), "Error json null or empty", Toast.LENGTH_LONG).show();
             return;
         }
@@ -96,7 +116,6 @@ public class activity_login extends AppCompatActivity {
     {
         return new File( getDataDir() , Registro.archivo );
     }
-
     private boolean isFileExits( )
     {
         File file = getFile( );
@@ -121,6 +140,14 @@ public class activity_login extends AppCompatActivity {
             if(i==0){
                 Toast.makeText(getApplicationContext(), "El usuario o contraseña son incorrectos", Toast.LENGTH_LONG).show();
             }
+        }
+    }
+    public void olvidar_contrasena(String usr, String pswd){
+        if(usr.equals("")||pswd.equals("")){
+            Toast.makeText(getApplicationContext(), "Llena los campos", Toast.LENGTH_LONG).show();
+        }else{
+            Intent intent = new Intent(activity_login.this,Olvide.class);
+            startActivity(intent);
         }
     }
 }
