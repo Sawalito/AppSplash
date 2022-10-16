@@ -3,6 +3,7 @@ package com.example.mysplash;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.PatternsCompat;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PatternMatcher;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -30,41 +32,49 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 
-public class Registro extends AppCompatActivity {
-    private Button button4;
+public class Registro extends AppCompatActivity implements View.OnClickListener {
+    private Button button4,pick;
+    private EditText usuario,pswd,mail,num,fec,nombre;
+    private CheckBox box1, box2, box3;
+    private Spinner spinner;
+    private RadioButton r1,r2;
+    private int dia, mes , ano;
     private static final String TAG = "MainActivity";
     public static final String archivo = "archivo.json";
     String json = null;
-    String usr = null;
-    String password=null;
-    String email = null;
+    public static String usr,password,email,numero,fecha,region,nom;
     public static boolean sw= false;
     public static boolean activado;
+    public static String[] box = new String[3];
     public static List<MyInfo> list =new ArrayList<MyInfo>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
-        Spinner spinner = findViewById(R.id.spinner);
+        //Declaracion de widgets
+        spinner = findViewById(R.id.spinner);
         String [] opciones = {"Norte","Sur","Centro"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, opciones);
         spinner.setAdapter(adapter);
+        pick = findViewById(R.id.pick);
         button4 = findViewById(R.id.button4);
         Button button5 = findViewById(R.id.button5);
-        EditText usuario = findViewById(R.id.usuario);
-        EditText pswd = findViewById(R.id.pswd);
-        EditText mail = findViewById(R.id.email);
-        EditText nombre = findViewById(R.id.nombre);
-        CheckBox box1 = findViewById(R.id.checkBox1);
-        CheckBox box2 = findViewById(R.id.checkBox2);
-        CheckBox box3 = findViewById(R.id.checkBox3);
-        RadioButton r1 = findViewById(R.id.radioButton3);
-        RadioButton r2 = findViewById(R.id.radioButton4);
-        EditText num = findViewById(R.id.num);
-        EditText fec = findViewById(R.id.fec);
+         usuario = findViewById(R.id.usuario);
+         pswd = findViewById(R.id.pswd);
+         mail = findViewById(R.id.email);
+         num = findViewById(R.id.num);
+         fec = findViewById(R.id.fec);
+         fec.setEnabled(false);
+         nombre = findViewById(R.id.nombre);
+         box1 = findViewById(R.id.checkBox1);
+         box2 = findViewById(R.id.checkBox2);
+         box3 = findViewById(R.id.checkBox3);
+         r1 = findViewById(R.id.radioButton3);
+         r2 = findViewById(R.id.radioButton4);
         Switch switch1 = findViewById(R.id.switch1);
         Read();
         json2List(json);
@@ -75,6 +85,8 @@ public class Registro extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        pick.setOnClickListener(this);
+
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,8 +95,10 @@ public class Registro extends AppCompatActivity {
                 usr= String.valueOf(usuario.getText());
                 password = String.valueOf(pswd.getText());
                 email= String.valueOf(mail.getText());
-
-                String[] box = new String[3];
+                numero = String.valueOf(num.getText());
+                fecha = String.valueOf(fec.getText());
+                region = spinner.getSelectedItem().toString();
+                nom = String.valueOf(nombre.getText());
 
                 if(box1.isChecked()==true){
                     box[0]="opcion1";
@@ -116,94 +130,29 @@ public class Registro extends AppCompatActivity {
                     Log.d(TAG,usr);
                     Log.d(TAG,password);
                     Log.d(TAG,email);
-                    if(usr.equals("")){
-                        Toast.makeText(getApplicationContext(), "LLena el campo de usuario", Toast.LENGTH_LONG).show();
-                    }
-                    if(password.equals("")){
-                        Toast.makeText(getApplicationContext(), "Introduce una contraseña", Toast.LENGTH_LONG).show();
-                    }
-                    if(email.equals("")){
-                        Toast.makeText(getApplicationContext(), "Introduce un correo", Toast.LENGTH_LONG).show();
-                    }
                     Toast.makeText(getApplicationContext(), "LLena los campos", Toast.LENGTH_LONG).show();
-
                 }else{
-                    if(validarEmail(email)){
+                    if(Metodos.validarEmail(email)){
                         if(list.isEmpty()){
                             Log.d(TAG,"lleno");
-                            info.setUsuario(usr);
-                            info.setPassword(Metodos.bytesToHex(Metodos.createSha1(String.valueOf(pswd.getText()))));
-                            info.setCel(String.valueOf(num.getText()));
-                            info.setDate(String.valueOf(fec.getText()));
-                            info.setConocer(box);
-                            info.setCorreo(String.valueOf(mail.getText()));
-                            info.setRegion(spinner.getSelectedItem().toString());
-                            info.setSexo(activado);
-                            info.setActivado(sw);
-                            info.setNombre(String.valueOf(nombre.getText()));
+                            Metodos.fillInfo(info);
                             List2Json(info,list);
                         }else{
-                            if(usuarios(list,usr)){
+                            if(Metodos.usuarios(list,usr)){
                                 Log.d(TAG,"esta ocupado mano");
                                 Toast.makeText(getApplicationContext(), "El nombre de usuario está ocupado, cambialo", Toast.LENGTH_LONG).show();
                             }else{
-                                info.setUsuario(usr);
-                                info.setPassword(Metodos.bytesToHex(Metodos.createSha1(String.valueOf(pswd.getText()))));
-                                info.setCel(String.valueOf(num.getText()));
-                                info.setDate(String.valueOf(fec.getText()));
-                                info.setConocer(box);
-                                info.setCorreo(String.valueOf(mail.getText()));
-                                info.setRegion(spinner.getSelectedItem().toString());
-                                info.setSexo(activado);
-                                info.setActivado(sw);
-                                info.setNombre(String.valueOf(nombre.getText()));
+                                Metodos.fillInfo(info);
                                 List2Json(info,list);
                             }
                         }
                     }else{
-                        Toast.makeText(getApplicationContext(), "Introdusca un correo válido", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Introduzca un correo válido", Toast.LENGTH_LONG).show();
                     }
 
                 }
             }
         });
-
-    }
-    public boolean validarEmail(String email){
-        boolean bandera;
-        if(email.isEmpty()){
-            bandera=false;
-        }else{
-            if(PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()){
-                bandera=true;
-            }else{
-                bandera=false;
-            }
-        }
-        return bandera;
-    }
-    public boolean usuarios(List<MyInfo> list,String usr){
-        boolean bandera = false;
-        for(MyInfo informacion : list){
-            if(informacion.getUsuario().equals(usr)){
-                bandera=true;
-            }
-        }
-      return bandera;
-    }
-    public void Objet2Json(MyInfo info){
-        Gson gson =null;
-        String json= null;
-        String mensaje = null;
-        gson =new Gson();
-        json = gson.toJson(info);
-        if (json != null) {
-            Log.d(TAG, json);
-            mensaje = "object2Json OK";
-        } else {
-            mensaje = "Error object2Json";
-        }
-        Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
     }
     public void List2Json(MyInfo info,List<MyInfo> list){
         Gson gson =null;
@@ -275,7 +224,7 @@ public class Registro extends AppCompatActivity {
         }
         return file.isFile() && file.exists();
     }
-    public void json2List( String json )
+    public void json2List( String json)
     {
         Gson gson = null;
         String mensaje = null;
@@ -291,6 +240,25 @@ public class Registro extends AppCompatActivity {
         {
             Toast.makeText(getApplicationContext(), "Error list is null or empty", Toast.LENGTH_LONG).show();
             return;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v==pick){
+            final Calendar c = Calendar.getInstance();
+            dia = c.get(Calendar.DAY_OF_MONTH);
+            mes = c.get(Calendar.MONTH);
+            ano = c.get(Calendar.YEAR);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                    fec.setText(i2+"/"+(i1+1)+"/"+i);
+                }
+            }
+            ,dia,mes,ano);
+            datePickerDialog.show();
         }
     }
 }

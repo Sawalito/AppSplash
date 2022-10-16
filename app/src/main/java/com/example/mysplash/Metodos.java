@@ -1,12 +1,30 @@
 package com.example.mysplash;
 
+import static com.example.mysplash.Registro.archivo;
+
+import android.content.Context;
+import android.content.Intent;
+import android.view.View;
+import android.widget.Toast;
+
+import androidx.core.util.PatternsCompat;
+
+import com.example.mysplash.json.MyInfo;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Metodos {
     public static final String TAG = "Saul";
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    //Metodos Sha1
     public static byte[] createSha1( String text )
     {
         MessageDigest messageDigest = null;
@@ -39,6 +57,46 @@ public class Metodos {
             hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
+    }
+    //Metodos validacion
+    public static boolean validarEmail(String email){
+        boolean bandera;
+        if(email.isEmpty()){
+            bandera=false;
+        }else{
+            if(PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()){
+                bandera=true;
+            }else{
+                bandera=false;
+            }
+        }
+        return bandera;
+    }
+    public static boolean usuarios(List<MyInfo> list, String usr){
+        boolean bandera = false;
+        for(MyInfo informacion : list){
+            if(informacion.getUsuario().equals(usr)){
+                bandera=true;
+            }
+        }
+        return bandera;
+    }
+    //Metodos JSON
+    //Metodo de llenado
+    public static void fillInfo(MyInfo info){
+        info.setUsuario(Registro.usr);
+        info.setPassword(bytesToHex(createSha1(Registro.password)));
+        info.setCel(Registro.numero);
+        info.setDate(Registro.fecha);
+        info.setConocer(Registro.box);
+        info.setCorreo(Registro.email);
+        info.setRegion(Registro.region);
+        info.setSexo(Registro.activado);
+        info.setActivado(Registro.sw);
+        info.setNombre(Registro.nom);
+    }
+    public static void vaciaJson(String json){
+        json = null;
     }
 
 }

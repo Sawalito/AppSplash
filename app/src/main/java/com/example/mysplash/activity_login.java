@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class activity_login extends AppCompatActivity {
-    private List<MyInfo> list;
+    public static List<MyInfo> list;
     public static String TAG = "mensaje";
     public static String json = null;
     public static String usr,pswd;
