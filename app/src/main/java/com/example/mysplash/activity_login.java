@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +134,7 @@ public class activity_login extends AppCompatActivity {
             for(MyInfo myInfo : list){
                 if(myInfo.getUsuario().equals(usr)&&myInfo.getPassword().equals(pswd)){
                     Intent intent = new Intent(activity_login.this, menu.class);
+                    intent.putExtra("Objeto", myInfo);
                     startActivity(intent);
                     i=1;
                 }
