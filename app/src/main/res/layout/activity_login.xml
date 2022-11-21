@@ -78,13 +78,13 @@
                 android:elevation="6dp"
                 android:text="@string/login"
                 app:cornerRadius="20dp"
-                app:layout_constraintBottom_toTopOf="@+id/button2"
+                app:layout_constraintBottom_toTopOf="@+id/buttonM"
                 app:layout_constraintEnd_toEndOf="@+id/pswds"
                 app:layout_constraintStart_toStartOf="@+id/pswds"
                 app:layout_constraintTop_toBottomOf="@+id/pswds" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/buttonM"
                 android:layout_width="280dp"
                 android:layout_height="55dp"
                 android:layout_marginBottom="20dp"
@@ -107,10 +107,10 @@
                 android:elevation="6dp"
                 app:cornerRadius="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/button2"
+                app:layout_constraintEnd_toEndOf="@+id/buttonM"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/button2"
-                app:layout_constraintTop_toBottomOf="@+id/button2" />
+                app:layout_constraintStart_toStartOf="@+id/buttonM"
+                app:layout_constraintTop_toBottomOf="@+id/buttonM" />
 
             <ImageView
                 android:id="@+id/imageView8"

@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ public class activity_login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        button2 = findViewById(R.id.button2);
+        button2 = findViewById(R.id.buttonM);
         button1 = findViewById(R.id.button);
         button3 = findViewById(R.id.button3);
         EditText usuario = findViewById(R.id.user);
@@ -48,7 +47,7 @@ public class activity_login extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 usr = String.valueOf(usuario.getText());
-                pswd = String.valueOf(pswds.getText())+ usr;
+                pswd = String.valueOf(pswds.getText());
                 pswd = Metodos.bytesToHex(Metodos.createSha1(pswd));
                 acceso(usr , pswd);
             }
@@ -64,12 +63,10 @@ public class activity_login extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 usr = String.valueOf(usuario.getText());
-                pswd = Metodos.bytesToHex(Metodos.createSha1(String.valueOf(pswds.getText())));
-                if(usr.equals("")||pswd.equals("")){
-                    Toast.makeText(getApplicationContext(), "Llena los campos", Toast.LENGTH_LONG).show();
+                if(usr.equals("")){
+                    Toast.makeText(getApplicationContext(), "Llena el campo de Usuario", Toast.LENGTH_LONG).show();
                 }else{
-                    Intent intent = new Intent(activity_login.this,Olvide.class);
-                    startActivity(intent);
+
                 }
             }
         });
@@ -144,12 +141,5 @@ public class activity_login extends AppCompatActivity {
             }
         }
     }
-    public void olvidar_contrasena(String usr, String pswd){
-        if(usr.equals("")||pswd.equals("")){
-            Toast.makeText(getApplicationContext(), "Llena los campos", Toast.LENGTH_LONG).show();
-        }else{
-            Intent intent = new Intent(activity_login.this,Olvide.class);
-            startActivity(intent);
-        }
-    }
+
 }

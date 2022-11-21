@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.mysplash.json.MyData;
 import com.example.mysplash.json.MyInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -51,10 +52,20 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
     public static boolean activado;
     public static String[] box = new String[3];
     public static List<MyInfo> list =new ArrayList<MyInfo>();
+    public static List<MyData> lista;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
+        //Contraseñas nuevas
+        lista= new ArrayList<>();
+        MyData myData=null;
+        /*for(int i=0;i<3;i++){
+            myData= new MyData();
+            myData.setContra(String.format("Contrasena %d" ,(int)(Math.random()*10000)));
+            myData.setUsuario(String.valueOf(i));
+            lista.add(myData);
+        }*/
         //Declaracion de widgets
         spinner = findViewById(R.id.spinner);
         String [] opciones = {"Norte","Sur","Centro"};
@@ -143,6 +154,7 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
                                 Toast.makeText(getApplicationContext(), "El nombre de usuario está ocupado, cambialo", Toast.LENGTH_LONG).show();
                             }else{
                                 Metodos.fillInfo(info);
+                                info.setContras(lista);
                                 List2Json(info,list);
                             }
                         }

@@ -86,7 +86,7 @@ public class Metodos {
     //Metodo de llenado
     public static void fillInfo(MyInfo info){
         info.setUsuario(Registro.usr);
-        String pass = Registro.password + Registro.usr;
+        String pass = Registro.password;
         info.setPassword(bytesToHex(createSha1(pass)));
         info.setCel(Registro.numero);
         info.setDate(Registro.fecha);
