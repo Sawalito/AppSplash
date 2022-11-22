@@ -115,16 +115,19 @@ public class menu extends AppCompatActivity {
             public void onClick(View view) {
                 String usr= String.valueOf(editText.getText());
                 String contra = String.valueOf(editText1.getText());
-                MyData myData = new MyData();
-                myData.setContra(contra);
-                myData.setUsuario(usr);
-                listo.add(myData);
-                myInfo.setContras(listo);
-                MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
-                listView.setAdapter(myAdapter);
-                editText.setText("");
-                editText1.setText("");
-                Toast.makeText(getApplicationContext(), "Se agregó la contraseña", Toast.LENGTH_LONG).show();
+                if(usr.equals("")||contra.equals("")){
+                    Toast.makeText(getApplicationContext(), "Llena los campos", Toast.LENGTH_LONG).show();
+                }else{
+                    MyData myData = new MyData();
+                    myData.setContra(contra);
+                    myData.setUsuario(usr);
+                    listo.add(myData);
+                    MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
+                    listView.setAdapter(myAdapter);
+                    editText.setText("");
+                    editText1.setText("");
+                    Toast.makeText(getApplicationContext(), "Se agregó la contraseña", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -140,10 +143,13 @@ public class menu extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
-        switch (item.getItemId() ) {
-            case R.id.item1:
-                String usr= String.valueOf(editText.getText());
-                String contra = String.valueOf(editText1.getText());
+        int id = item.getItemId();
+        if(id==R.id.item1){
+            String usr= String.valueOf(editText.getText());
+            String contra = String.valueOf(editText1.getText());
+            if(usr.equals("")||contra.equals("")){
+                Toast.makeText(getApplicationContext(), "Llena los campos", Toast.LENGTH_LONG).show();
+            }else{
                 MyData myData = new MyData();
                 myData.setContra(contra);
                 myData.setUsuario(usr);
@@ -153,21 +159,26 @@ public class menu extends AppCompatActivity {
                 editText.setText("");
                 editText1.setText("");
                 Toast.makeText(getApplicationContext(), "Se agregó la contraseña", Toast.LENGTH_LONG).show();
-            case R.id.item2:
-                int i =0;
-                for(MyInfo inf : list){
-                    if(myInfo.getUsuario().equals(inf.getUsuario())){
-                        list.get(i).setContras(listo);
-                    }
-                    i++;
-                }
-                List2Json(myInfo,list);
-            case R.id.item3:
-                Intent intent = new Intent(menu.this, activity_login.class);
-                startActivity(intent);
-            default:
-                return super.onOptionsItemSelected(item);
+            }
+            return true;
         }
+        if(id==R.id.item2){
+            int i =0;
+            for(MyInfo inf : list){
+                if(myInfo.getUsuario().equals(inf.getUsuario())){
+                    list.get(i).setContras(listo);
+                }
+                i++;
+            }
+            List2Json(myInfo,list);
+            return true;
+        }
+        if(id==R.id.item3){
+            Intent intent= new Intent(menu.this,activity_login.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     public void List2Json(MyInfo info,List<MyInfo> list){
         Gson gson =null;

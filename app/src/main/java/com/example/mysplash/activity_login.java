@@ -10,9 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.mysplash.json.MyInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,8 +32,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class activity_login extends AppCompatActivity {
+    public String correo;
+    public String mensaje;
     public static List<MyInfo> list;
     public static String TAG = "mensaje";
+    public static String TOG = "error";
     public static String json = null;
     public static String usr,pswd;
     private Button button1, button2, button3;
@@ -66,7 +78,29 @@ public class activity_login extends AppCompatActivity {
                 if(usr.equals("")){
                     Toast.makeText(getApplicationContext(), "Llena el campo de Usuario", Toast.LENGTH_LONG).show();
                 }else{
-
+                    int i=0;
+                    for(MyInfo inf : list){
+                        if(inf.getUsuario().equals(usr)){
+                            correo=inf.getCorreo();
+                            mensaje=inf.getPassword();
+                            i=1;
+                        }
+                    }
+                    if(i==1){
+                        Log.i(TAG,usr);
+                        if( sendInfo( correo,mensaje ) )
+                        {
+                            Toast.makeText(getBaseContext() , "Se envío el texto" , Toast.LENGTH_LONG );
+                            return;
+                        }
+                        Toast.makeText(getBaseContext() , "Error en el envío" , Toast.LENGTH_LONG );
+                    }else{
+                        if(i==0){
+                            Log.i(TAG,"no hay usuarios");
+                            Toast.makeText(getBaseContext() , "No existen usuarios" , Toast.LENGTH_LONG );
+                            return;
+                        }
+                    }
                 }
             }
         });
@@ -142,4 +176,42 @@ public class activity_login extends AppCompatActivity {
         }
     }
 
+
+    public boolean sendInfo( String correo ,String mensaje)
+    {
+        JsonObjectRequest jsonObjectRequest = null;
+        JSONObject jsonObject = null;
+        String url = "https://us-central1-nemidesarrollo.cloudfunctions.net/function-test";
+        RequestQueue requestQueue = null;
+        if( correo == null || correo.length() == 0 )
+        {
+            return false;
+        }
+        jsonObject = new JSONObject( );
+        try
+        {
+            jsonObject.put("correo" , correo );
+            jsonObject.put("mensaje", mensaje);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response)
+            {
+                Log.i(TAG, response.toString());
+            }
+        } , new  Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TOG, error.toString());
+            }
+        } );
+        requestQueue = Volley.newRequestQueue( getBaseContext() );
+        requestQueue.add(jsonObjectRequest);
+
+        return true;
+    }
 }
