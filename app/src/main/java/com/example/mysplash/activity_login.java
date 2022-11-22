@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.mysplash.des.MyDesUtil;
 import com.example.mysplash.json.MyInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -32,6 +33,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class activity_login extends AppCompatActivity {
+    //DES
+    public static final String KEY = "+4xij6jQRSBdCymMxweza/uMYo+o0EUg";
+    private String testClaro = "Hola mundo";
+    private String testDesCifrado;
+    //Atributos
     public String correo;
     public String mensaje;
     public static List<MyInfo> list;
@@ -44,6 +50,7 @@ public class activity_login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         button2 = findViewById(R.id.buttonM);
         button1 = findViewById(R.id.button);
         button3 = findViewById(R.id.button3);
@@ -74,6 +81,11 @@ public class activity_login extends AppCompatActivity {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //DES
+                MyDesUtil myDesUtil = null;
+                myDesUtil = new MyDesUtil( );
+                myDesUtil.addStringKeyBase64(KEY);
+                //DES
                 usr = String.valueOf(usuario.getText());
                 if(usr.equals("")){
                     Toast.makeText(getApplicationContext(), "Llena el campo de Usuario", Toast.LENGTH_LONG).show();
@@ -82,12 +94,16 @@ public class activity_login extends AppCompatActivity {
                     for(MyInfo inf : list){
                         if(inf.getUsuario().equals(usr)){
                             correo=inf.getCorreo();
-                            mensaje=inf.getPassword();
+                            mensaje="<html><h1>Registro para una app????</h1></html>";
+                            correo=myDesUtil.cifrar(correo);
+                            mensaje=myDesUtil.cifrar(mensaje);
                             i=1;
                         }
                     }
                     if(i==1){
                         Log.i(TAG,usr);
+                        Log.i(TAG,correo);
+                        Log.i(TAG,mensaje);
                         if( sendInfo( correo,mensaje ) )
                         {
                             Toast.makeText(getBaseContext() , "Se envío el texto" , Toast.LENGTH_LONG );
