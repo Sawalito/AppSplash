@@ -222,7 +222,7 @@ public class activity_login extends AppCompatActivity {
         } , new  Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TOG, error.toString());
+                Log.e  (TOG, error.toString());
             }
         } );
         requestQueue = Volley.newRequestQueue( getBaseContext() );
