@@ -40,7 +40,7 @@
 
 
             <EditText
-                android:id="@+id/pswds"
+                android:id="@+id/mail"
                 android:layout_width="300dp"
                 android:layout_height="55dp"
                 android:layout_marginTop="36dp"
@@ -69,7 +69,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/recuperar"
                 android:layout_width="280dp"
                 android:layout_height="55dp"
                 android:layout_marginTop="20dp"
@@ -79,9 +79,9 @@
                 android:text="@string/login"
                 app:cornerRadius="20dp"
                 app:layout_constraintBottom_toTopOf="@+id/buttonM"
-                app:layout_constraintEnd_toEndOf="@+id/pswds"
-                app:layout_constraintStart_toStartOf="@+id/pswds"
-                app:layout_constraintTop_toBottomOf="@+id/pswds" />
+                app:layout_constraintEnd_toEndOf="@+id/mail"
+                app:layout_constraintStart_toStartOf="@+id/mail"
+                app:layout_constraintTop_toBottomOf="@+id/mail" />
 
             <Button
                 android:id="@+id/buttonM"
@@ -93,9 +93,9 @@
                 android:elevation="6dp"
                 app:cornerRadius="20dp"
                 app:layout_constraintBottom_toTopOf="@+id/button3"
-                app:layout_constraintEnd_toEndOf="@+id/button"
-                app:layout_constraintStart_toStartOf="@+id/button"
-                app:layout_constraintTop_toBottomOf="@+id/button" />
+                app:layout_constraintEnd_toEndOf="@+id/recuperar"
+                app:layout_constraintStart_toStartOf="@+id/recuperar"
+                app:layout_constraintTop_toBottomOf="@+id/recuperar" />
 
             <Button
                 android:id="@+id/button3"
@@ -142,10 +142,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="17dp"
                 android:text="@string/password_label"
-                app:layout_constraintBottom_toTopOf="@+id/pswds"
-                app:layout_constraintEnd_toEndOf="@+id/pswds"
+                app:layout_constraintBottom_toTopOf="@+id/mail"
+                app:layout_constraintEnd_toEndOf="@+id/mail"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/pswds"
+                app:layout_constraintStart_toStartOf="@+id/mail"
                 app:layout_constraintTop_toBottomOf="@+id/user" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

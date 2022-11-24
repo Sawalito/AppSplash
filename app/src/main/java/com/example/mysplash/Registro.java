@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.mysplash.des.MyDesUtil;
 import com.example.mysplash.json.MyData;
 import com.example.mysplash.json.MyInfo;
 import com.google.gson.Gson;
@@ -45,7 +46,7 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
     private RadioButton r1,r2;
     private int dia, mes , ano;
     private static final String TAG = "MainActivity";
-    public static final String archivo = "archivo.json";
+    public static final String archivo = "S.json";
     String json = null;
     public static String usr,password,email,numero,fecha,region,nom;
     public static boolean sw= false;
@@ -53,6 +54,8 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
     public static String[] box = new String[3];
     public static List<MyInfo> list =new ArrayList<MyInfo>();
     public static List<MyData> lista;
+    public static final String KEY = "+4xij6jQRSBdCymMxweza/uMYo+o0EUg";
+    public MyDesUtil myDesUtil= new MyDesUtil().addStringKeyBase64(KEY);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,13 +63,6 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
         //Contraseñas nuevas
         lista= new ArrayList<>();
         MyData myData=null;
-        /*for(int i=0;i<3;i++){
-            myData= new MyData();
-            myData.setContra(String.format("Contrasena %d" ,(int)(Math.random()*10000)));
-            myData.setUsuario(String.valueOf(i));
-            lista.add(myData);
-        }*/
-        //Declaracion de widgets
         spinner = findViewById(R.id.spinner);
         String [] opciones = {"Norte","Sur","Centro"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, opciones);
@@ -179,6 +175,8 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
         else
         {
             Log.d(TAG, json);
+            json=myDesUtil.cifrar(json);
+            Log.d(TAG, json);
             writeFile(json);
         }
         Toast.makeText(getApplicationContext(), "Ok", Toast.LENGTH_LONG).show();
@@ -207,6 +205,7 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
     private File getFile(){
         return new File(getDataDir(),archivo);
     }
+
     public boolean Read(){
         if(!isFileExits()){
             return false;
@@ -219,6 +218,7 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
             fileInputStream = new FileInputStream(file);
             fileInputStream.read(bytes);
             json=new String(bytes);
+            json= myDesUtil.desCifrar(json);
             Log.d(TAG,json);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

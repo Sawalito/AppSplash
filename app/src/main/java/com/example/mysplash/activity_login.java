@@ -46,16 +46,17 @@ public class activity_login extends AppCompatActivity {
     public static String json = null;
     public static String usr,pswd;
     private Button button1, button2, button3;
+    public MyDesUtil myDesUtil= new MyDesUtil().addStringKeyBase64(KEY);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         button2 = findViewById(R.id.buttonM);
-        button1 = findViewById(R.id.button);
+        button1 = findViewById(R.id.recuperar);
         button3 = findViewById(R.id.button3);
         EditText usuario = findViewById(R.id.user);
-        EditText pswds = findViewById(R.id.pswds);
+        EditText pswds = findViewById(R.id.mail);
         Read();
         json2List(json);
         if (json == null || json.length() == 0){
@@ -67,7 +68,6 @@ public class activity_login extends AppCompatActivity {
             public void onClick(View view) {
                 usr = String.valueOf(usuario.getText());
                 pswd = String.valueOf(pswds.getText());
-                pswd = Metodos.bytesToHex(Metodos.createSha1(pswd));
                 acceso(usr , pswd);
             }
         });
@@ -81,43 +81,8 @@ public class activity_login extends AppCompatActivity {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //DES
-                MyDesUtil myDesUtil = null;
-                myDesUtil = new MyDesUtil( );
-                myDesUtil.addStringKeyBase64(KEY);
-                //DES
-                usr = String.valueOf(usuario.getText());
-                if(usr.equals("")){
-                    Toast.makeText(getApplicationContext(), "Llena el campo de Usuario", Toast.LENGTH_LONG).show();
-                }else{
-                    int i=0;
-                    for(MyInfo inf : list){
-                        if(inf.getUsuario().equals(usr)){
-                            correo=inf.getCorreo();
-                            mensaje="<html><h1>Registro para una app????</h1></html>";
-                            correo=myDesUtil.cifrar(correo);
-                            mensaje=myDesUtil.cifrar(mensaje);
-                            i=1;
-                        }
-                    }
-                    if(i==1){
-                        Log.i(TAG,usr);
-                        Log.i(TAG,correo);
-                        Log.i(TAG,mensaje);
-                        if( sendInfo( correo,mensaje ) )
-                        {
-                            Toast.makeText(getBaseContext() , "Se envío el texto" , Toast.LENGTH_LONG );
-                            return;
-                        }
-                        Toast.makeText(getBaseContext() , "Error en el envío" , Toast.LENGTH_LONG );
-                    }else{
-                        if(i==0){
-                            Log.i(TAG,"no hay usuarios");
-                            Toast.makeText(getBaseContext() , "No existen usuarios" , Toast.LENGTH_LONG );
-                            return;
-                        }
-                    }
-                }
+                Intent intent = new Intent(activity_login.this, Olvide.class);
+                startActivity(intent);
             }
         });
     }
@@ -133,6 +98,7 @@ public class activity_login extends AppCompatActivity {
             fileInputStream = new FileInputStream(file);
             fileInputStream.read(bytes);
             json=new String(bytes);
+            json= myDesUtil.desCifrar(json);
             Log.d(TAG,json);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -190,44 +156,5 @@ public class activity_login extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "El usuario o contraseña son incorrectos", Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-
-    public boolean sendInfo( String correo ,String mensaje)
-    {
-        JsonObjectRequest jsonObjectRequest = null;
-        JSONObject jsonObject = null;
-        String url = "https://us-central1-nemidesarrollo.cloudfunctions.net/function-test";
-        RequestQueue requestQueue = null;
-        if( correo == null || correo.length() == 0 )
-        {
-            return false;
-        }
-        jsonObject = new JSONObject( );
-        try
-        {
-            jsonObject.put("correo" , correo );
-            jsonObject.put("mensaje", mensaje);
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-        jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response)
-            {
-                Log.i(TAG, response.toString());
-            }
-        } , new  Response.ErrorListener(){
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e  (TOG, error.toString());
-            }
-        } );
-        requestQueue = Volley.newRequestQueue( getBaseContext() );
-        requestQueue.add(jsonObjectRequest);
-
-        return true;
     }
 }

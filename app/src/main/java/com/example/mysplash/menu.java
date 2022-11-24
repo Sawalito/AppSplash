@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mysplash.MyAdapter.MyAdapter;
+import com.example.mysplash.des.MyDesUtil;
 import com.example.mysplash.json.MyData;
 import com.example.mysplash.json.MyInfo;
 import com.google.gson.Gson;
@@ -36,11 +37,14 @@ import java.util.List;
 
 public class menu extends AppCompatActivity {
     private List<MyInfo> list;
+    public static final String KEY = "+4xij6jQRSBdCymMxweza/uMYo+o0EUg";
+    public MyDesUtil myDesUtil= new MyDesUtil().addStringKeyBase64(KEY);
     public static String TAG = "mensaje";
     public static String json = null;
     private ListView listView;
     private List<MyData> listo;
     String aux;
+    public boolean bandera = false;
     public int pos=0;
     public static MyInfo myInfo= null;
     EditText editText,editText1;
@@ -75,14 +79,20 @@ public class menu extends AppCompatActivity {
         listo = myInfo.getContras();
         MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
         listView.setAdapter(myAdapter);
+        button.setEnabled(false);
+        button1.setEnabled(false);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 editText.setText(listo.get(i).getUsuario());
                 editText1.setText(listo.get(i).getContra());
                 pos=i;
+                button.setEnabled(true);
+                button1.setEnabled(true);
             }
         });
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,6 +103,8 @@ public class menu extends AppCompatActivity {
                 editText.setText("");
                 editText1.setText("");
                 Toast.makeText(getApplicationContext(), "Se eliminó la contraseña", Toast.LENGTH_LONG).show();
+                button.setEnabled(false);
+                button1.setEnabled(false);
             }
         });
         button1.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +120,8 @@ public class menu extends AppCompatActivity {
                 editText.setText("");
                 editText1.setText("");
                 Toast.makeText(getApplicationContext(), "Se modificó la contraseña", Toast.LENGTH_LONG).show();
+                button.setEnabled(false);
+                button1.setEnabled(false);
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
@@ -191,6 +205,8 @@ public class menu extends AppCompatActivity {
         }
         else
         {
+            Log.d(TAG, json);
+            json = myDesUtil.cifrar(json);
             Log.d(TAG, json);
             writeFile(json);
         }

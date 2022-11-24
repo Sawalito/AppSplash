@@ -87,7 +87,7 @@ public class Metodos {
     public static void fillInfo(MyInfo info){
         info.setUsuario(Registro.usr);
         String pass = Registro.password;
-        info.setPassword(bytesToHex(createSha1(pass)));
+        info.setPassword(pass);
         info.setCel(Registro.numero);
         info.setDate(Registro.fecha);
         info.setConocer(Registro.box);
