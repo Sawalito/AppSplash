@@ -37,8 +37,7 @@ import java.util.List;
 
 public class menu extends AppCompatActivity {
     private List<MyInfo> list;
-    public static final String KEY = "+4xij6jQRSBdCymMxweza/uMYo+o0EUg";
-    public MyDesUtil myDesUtil= new MyDesUtil().addStringKeyBase64(KEY);
+    public MyDesUtil myDesUtil= new MyDesUtil().addStringKeyBase64(Registro.KEY);
     public static String TAG = "mensaje";
     public static String json = null;
     private ListView listView;
@@ -81,7 +80,11 @@ public class menu extends AppCompatActivity {
         listView.setAdapter(myAdapter);
         button.setEnabled(false);
         button1.setEnabled(false);
-
+        if(listo.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Para agregar una contraseña de clic en el menú o en el boton +", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Escriba en los campos", Toast.LENGTH_LONG).show();
+        }
+        Toast.makeText(getApplicationContext(), "Para modificar o eliminar una contraseña de click en ella", Toast.LENGTH_LONG).show();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -90,6 +93,7 @@ public class menu extends AppCompatActivity {
                 pos=i;
                 button.setEnabled(true);
                 button1.setEnabled(true);
+                Toast.makeText(getApplicationContext(), "Para guardar los cambios de click en guardar cambios", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -112,16 +116,20 @@ public class menu extends AppCompatActivity {
             public void onClick(View view) {
                 String usr= String.valueOf(editText.getText());
                 String contra = String.valueOf(editText1.getText());
-                listo.get(pos).setUsuario(usr);
-                listo.get(pos).setContra(contra);
-                myInfo.setContras(listo);
-                MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
-                listView.setAdapter(myAdapter);
-                editText.setText("");
-                editText1.setText("");
-                Toast.makeText(getApplicationContext(), "Se modificó la contraseña", Toast.LENGTH_LONG).show();
-                button.setEnabled(false);
-                button1.setEnabled(false);
+                if(usr.equals("")||contra.equals("")){
+                    Toast.makeText(getApplicationContext(), "Llene los campos", Toast.LENGTH_LONG).show();
+                }else{
+                    listo.get(pos).setUsuario(usr);
+                    listo.get(pos).setContra(contra);
+                    myInfo.setContras(listo);
+                    MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
+                    listView.setAdapter(myAdapter);
+                    editText.setText("");
+                    editText1.setText("");
+                    Toast.makeText(getApplicationContext(), "Se modificó la contraseña", Toast.LENGTH_LONG).show();
+                    button.setEnabled(false);
+                    button1.setEnabled(false);
+                }
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
