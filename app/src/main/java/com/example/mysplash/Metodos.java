@@ -73,10 +73,10 @@ public class Metodos {
         }
         return bandera;
     }
-    public static boolean usuarios(List<MyInfo> list, String usr){
+    public static boolean usuarios(List<MyInfo> list, String usr,String correo){
         boolean bandera = false;
         for(MyInfo informacion : list){
-            if(informacion.getUsuario().equals(usr)){
+            if(informacion.getUsuario().equals(usr) || informacion.getCorreo().equals(correo)){
                 bandera=true;
             }
         }

@@ -145,9 +145,9 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
                             Metodos.fillInfo(info);
                             List2Json(info,list);
                         }else{
-                            if(Metodos.usuarios(list,usr)){
+                            if(Metodos.usuarios(list,usr,email)){
                                 Log.d(TAG,"esta ocupado mano");
-                                Toast.makeText(getApplicationContext(), "El nombre de usuario está ocupado, cambialo", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "El nombre de usuario o correo, están ocupado, cambialo", Toast.LENGTH_LONG).show();
                             }else{
                                 Metodos.fillInfo(info);
                                 info.setContras(lista);

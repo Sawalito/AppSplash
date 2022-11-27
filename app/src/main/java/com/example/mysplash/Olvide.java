@@ -2,6 +2,7 @@
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,8 +28,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,36 +39,54 @@ import java.util.List;
       public static List<MyInfo> list;
       public static String json = null;
       public static String TAG = "mensaje";
+      public static String TOG = "error";
       public static String cadena= null;
       public MyDesUtil myDesUtil= new MyDesUtil().addStringKeyBase64(Registro.KEY);
       public String usr=null;
       public String correo,mensaje;
       EditText usuario,email;
-      Button button;
+      Button button,button1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_olvide);
         usuario= findViewById(R.id.user);
-
+        email=findViewById(R.id.mail);
         button = findViewById(R.id.recuperar);
+        button1 = findViewById(R.id.login);
         list=activity_login.list;
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Olvide.this, activity_login.class);
+                startActivity(intent);
+            }
+        });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 usr = String.valueOf(usuario.getText());
-                if(usr.equals("")){
-                    Toast.makeText(getApplicationContext(), "Llena el campo de Usuario", Toast.LENGTH_LONG).show();
+                correo= String.valueOf(email.getText());
+                if(usr.equals("")&&email.equals("")){
+                    Toast.makeText(getApplicationContext(), "Complete algún campo", Toast.LENGTH_LONG).show();
                 }else{
                     int i=0;
+                    int j=0;
                     for(MyInfo inf : list){
-                        if(inf.getUsuario().equals(usr)){
+                        if(inf.getUsuario().equals(usr) || inf.getCorreo().equals(correo)){
                             correo=inf.getCorreo();
-                            mensaje="<html><h1>Registro para una app????</h1></html>";
+                            String contra=inf.getPassword();
+                            String nueva = String.format("%d",(int)(Math.random()*1000));
+                            mensaje="<html><body><h1>Su contraseña era "+contra+" ahora es "+nueva+"</h1></body></html>";
                             correo=myDesUtil.cifrar(correo);
                             mensaje=myDesUtil.cifrar(mensaje);
+                            list.get(j).setPassword(nueva);
+                            Log.i(TAG,nueva);
+                            Log.i(TAG,list.get(j).getPassword());
+                            List2Json(list);
                             i=1;
                         }
+                        j++;
                     }
                     if(i==1){
                         Log.i(TAG,usr);
@@ -73,14 +94,14 @@ import java.util.List;
                         Log.i(TAG,mensaje);
                         if( sendInfo( correo,mensaje ) )
                         {
-                            Toast.makeText(getBaseContext() , "Se envío el texto" , Toast.LENGTH_LONG );
+                            Toast.makeText(getBaseContext() , "Se envío el texto" , Toast.LENGTH_LONG ).show();
                             return;
                         }
-                        Toast.makeText(getBaseContext() , "Error en el envío" , Toast.LENGTH_LONG );
+                        Toast.makeText(getBaseContext() , "Error en el envío" , Toast.LENGTH_LONG ).show();
                     }else{
                         if(i==0){
                             Log.i(TAG,"no hay usuarios");
-                            Toast.makeText(getBaseContext() , "No existen usuarios" , Toast.LENGTH_LONG );
+                            Toast.makeText(getBaseContext() , "No existen usuarios" , Toast.LENGTH_LONG ).show();
                             return;
                         }
                     }
@@ -94,7 +115,7 @@ import java.util.List;
       {
           JsonObjectRequest jsonObjectRequest = null;
           JSONObject jsonObject = null;
-          String url = "https://us-central1-nemidesarrollo.cloudfunctions.net/function-test";
+          String url = "https://us-central1-nemidesarrollo.cloudfunctions.net/envio_correo";
           RequestQueue requestQueue = null;
           if( correo == null || correo.length() == 0 )
           {
@@ -105,6 +126,8 @@ import java.util.List;
           {
               jsonObject.put("correo" , correo );
               jsonObject.put("mensaje", mensaje);
+              String hola = jsonObject.toString();
+              Log.i(TAG,hola);
           }
           catch (JSONException e)
           {
@@ -119,12 +142,84 @@ import java.util.List;
           } , new  Response.ErrorListener(){
               @Override
               public void onErrorResponse(VolleyError error) {
-                  Log.e  (TAG, error.toString());
+                  Log.e  (TOG, error.toString());
               }
           } );
           requestQueue = Volley.newRequestQueue( getBaseContext() );
           requestQueue.add(jsonObjectRequest);
 
           return true;
+      }
+      public boolean Read(){
+          if(!isFileExits()){
+              return false;
+          }
+          File file = getFile();
+          FileInputStream fileInputStream = null;
+          byte[] bytes = null;
+          bytes = new byte[(int)file.length()];
+          try {
+              fileInputStream = new FileInputStream(file);
+              fileInputStream.read(bytes);
+              json=new String(bytes);
+              json= myDesUtil.desCifrar(json);
+              Log.d(TAG,json);
+          } catch (FileNotFoundException e) {
+              e.printStackTrace();
+          } catch (IOException e) {
+              e.printStackTrace();
+          }
+          return false;
+      }
+      private File getFile( )
+      {
+          return new File( getDataDir() , Registro.archivo );
+      }
+      private boolean isFileExits( )
+      {
+          File file = getFile( );
+          if( file == null )
+          {
+              return false;
+          }
+          return file.isFile() && file.exists();
+      }
+      public void List2Json(List<MyInfo> list){
+          Gson gson =null;
+          String json= null;
+          gson =new Gson();
+          json =gson.toJson(list, ArrayList.class);
+          if (json == null)
+          {
+              Log.d(TAG, "Error json");
+          }
+          else
+          {
+              Log.d(TAG, json);
+              json=myDesUtil.cifrar(json);
+              Log.d(TAG, json);
+              writeFile(json);
+          }
+      }
+      private boolean writeFile(String text){
+          File file =null;
+          FileOutputStream fileOutputStream =null;
+          try{
+              file=getFile();
+              fileOutputStream = new FileOutputStream( file );
+              fileOutputStream.write( text.getBytes(StandardCharsets.UTF_8) );
+              fileOutputStream.close();
+              Log.d(TAG, "Hola");
+              return true;
+          }
+          catch (FileNotFoundException e)
+          {
+              e.printStackTrace();
+          }
+          catch (IOException e)
+          {
+              e.printStackTrace();
+          }
+          return false;
       }
 }
