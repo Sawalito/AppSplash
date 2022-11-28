@@ -98,6 +98,7 @@ public class activity_login extends AppCompatActivity {
             fileInputStream = new FileInputStream(file);
             fileInputStream.read(bytes);
             json=new String(bytes);
+            Log.d(TAG,json);
             json= myDesUtil.desCifrar(json);
             Log.d(TAG,json);
         } catch (FileNotFoundException e) {
