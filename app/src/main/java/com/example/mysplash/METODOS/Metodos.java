@@ -1,4 +1,4 @@
-package com.example.mysplash;
+package com.example.mysplash.METODOS;
 
 import static com.example.mysplash.Registro.archivo;
 
@@ -10,6 +10,9 @@ import android.widget.Toast;
 
 import androidx.core.util.PatternsCompat;
 
+import com.example.mysplash.Olvide;
+import com.example.mysplash.Registro;
+import com.example.mysplash.activity_login;
 import com.example.mysplash.json.MyInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -90,15 +93,14 @@ public class Metodos {
         info.setPassword(pass);
         info.setCel(Registro.numero);
         info.setDate(Registro.fecha);
-        info.setConocer(Registro.box);
+        info.setBox1(Registro.box1s);
+        info.setBox2(Registro.box2s);
+        info.setBox3(Registro.box3s);
         info.setCorreo(Registro.email);
         info.setRegion(Registro.region);
         info.setSexo(Registro.activado);
         info.setActivado(Registro.sw);
         info.setNombre(Registro.nom);
-    }
-    public static void vaciaJson(String json){
-        json = null;
     }
     //Metodos encuentra contrasena
     public static void encuentra(String cadena){

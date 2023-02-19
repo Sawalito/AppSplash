@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mysplash.MyAdapter.MyAdapter;
+import com.example.mysplash.Service.DbContras;
+import com.example.mysplash.Service.DbUsuarios;
 import com.example.mysplash.des.MyDesUtil;
 import com.example.mysplash.json.MyData;
 import com.example.mysplash.json.MyInfo;
@@ -36,10 +38,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class menu extends AppCompatActivity {
-    private List<MyInfo> list;
     public MyDesUtil myDesUtil= new MyDesUtil().addStringKeyBase64(Registro.KEY);
     public static String TAG = "mensaje";
     public static String json = null;
+    public List<MyInfo> list;
     private ListView listView;
     private List<MyData> listo;
     String aux;
@@ -66,21 +68,22 @@ public class menu extends AppCompatActivity {
                 }
             }
         }
-        list= new ArrayList<>();
-        list = activity_login.list;
         editText=findViewById(R.id.editText1);
         editText1=findViewById(R.id.editText2);
         button=findViewById(R.id.buttonE);
         button1=findViewById(R.id.buttonM);
         button2=findViewById(R.id.buttonA);
         listView = (ListView) findViewById(R.id.listViewId);
-        listo = new ArrayList<MyData>();
-        listo = myInfo.getContras();
+
+        DbContras dbContras = new DbContras(menu.this);
+        listo = new ArrayList<>();
+        listo = dbContras.getContras(myInfo.getId_usr());
+
         MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
         listView.setAdapter(myAdapter);
         button.setEnabled(false);
         button1.setEnabled(false);
-        if(listo.isEmpty()){
+        if(listo==null){
             Toast.makeText(getApplicationContext(), "Para agregar una contraseña de clic en el menú o en el boton +", Toast.LENGTH_LONG).show();
             Toast.makeText(getApplicationContext(), "Escriba en los campos", Toast.LENGTH_LONG).show();
         }
@@ -143,12 +146,13 @@ public class menu extends AppCompatActivity {
                     MyData myData = new MyData();
                     myData.setContra(contra);
                     myData.setUsuario(usr);
+                    myData.setId_usr(myInfo.getId_usr());
                     listo.add(myData);
                     MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
                     listView.setAdapter(myAdapter);
                     editText.setText("");
                     editText1.setText("");
-                    Toast.makeText(getApplicationContext(), "Se agregó la contraseña", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), myData.getUsuario()+" "+myData.getContra(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -192,7 +196,7 @@ public class menu extends AppCompatActivity {
                 }
                 i++;
             }
-            List2Json(myInfo,list);
+            //List2Json(myInfo,list);
             return true;
         }
         if(id==R.id.item3){
@@ -201,48 +205,6 @@ public class menu extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-    public void List2Json(MyInfo info,List<MyInfo> list){
-        Gson gson =null;
-        String json= null;
-        gson =new Gson();
-        json =gson.toJson(list, ArrayList.class);
-        if (json == null)
-        {
-            Log.d(TAG, "Error json");
-        }
-        else
-        {
-            Log.d(TAG, json);
-            json = myDesUtil.cifrar(json);
-            Log.d(TAG, json);
-            writeFile(json);
-        }
-        Toast.makeText(getApplicationContext(), "Ok", Toast.LENGTH_LONG).show();
-    }
-    private boolean writeFile(String text){
-        File file =null;
-        FileOutputStream fileOutputStream =null;
-        try{
-            file=getFile();
-            fileOutputStream = new FileOutputStream( file );
-            fileOutputStream.write( text.getBytes(StandardCharsets.UTF_8) );
-            fileOutputStream.close();
-            Log.d(TAG, "Hola");
-            return true;
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    private File getFile(){
-        return new File(getDataDir(),Registro.archivo);
     }
 
 }

@@ -1,12 +1,10 @@
 package com.example.mysplash;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.util.PatternsCompat;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PatternMatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,21 +17,13 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.mysplash.METODOS.Metodos;
+import com.example.mysplash.Service.DbUsuarios;
 import com.example.mysplash.des.MyDesUtil;
 import com.example.mysplash.json.MyData;
 import com.example.mysplash.json.MyInfo;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -49,9 +39,13 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
     public static final String archivo = "S.json";
     String json = null;
     public static String usr,password,email,numero,fecha,region,nom;
-    public static boolean sw= false;
-    public static boolean activado;
+    public static int sw= 0;
+    public static int activado;
     public static String[] box = new String[3];
+    public static String box1s;
+    public static String box2s;
+    public static String box3s;
+
     public static List<MyInfo> list =new ArrayList<MyInfo>();
     public static List<MyData> lista;
     public static final String KEY = "+4xij6jQRSBdCymMxweza/uMYo+o0EUg";
@@ -83,8 +77,6 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
          r1 = findViewById(R.id.radioButton3);
          r2 = findViewById(R.id.radioButton4);
         Switch switch1 = findViewById(R.id.switch1);
-        Read();
-        json2List(json);
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +90,6 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
             @Override
             public void onClick(View view) {
                 MyInfo info= new MyInfo();
-
                 usr= String.valueOf(usuario.getText());
                 password = String.valueOf(pswd.getText());
                 email= String.valueOf(mail.getText());
@@ -108,28 +99,28 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
                 nom = String.valueOf(nombre.getText());
 
                 if(box1.isChecked()==true){
-                    box[0]="opcion1";
+                    box1s="opcion1";
                 }else{
-                    box[0]="no";
+                    box1s="no";
                 }
                 if(box2.isChecked()==true){
-                    box[1]="opcion2";
+                    box2s="opcion2";
                 }else{
-                    box[1]="no";
+                    box2s="no";
                 }
                 if(box3.isChecked()==true){
-                    box[2]="opcion3";
+                    box3s="opcion3";
                 }else{
-                    box[2]="no";
+                    box3s="no";
                 }
                 if(r1.isChecked()==true){
-                    activado=true;
+                    activado=1;
                 }
                 if(r2.isChecked()==true){
-                    activado=true;
+                    activado=1;
                 }
                 if(switch1.isChecked()){
-                    sw= true;
+                    sw= 1;
                 }
                 //Validaciones
                 if(usr.equals("")||password.equals("")||email.equals("")){
@@ -140,20 +131,15 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
                     Toast.makeText(getApplicationContext(), "LLena los campos", Toast.LENGTH_LONG).show();
                 }else{
                     if(Metodos.validarEmail(email)){
-                        if(list.isEmpty()){
-                            Log.d(TAG,"lleno");
-                            Metodos.fillInfo(info);
-                            List2Json(info,list);
+                        Metodos.fillInfo(info);
+                        DbUsuarios dbUsuarios = new DbUsuarios(Registro.this);
+                        long id=dbUsuarios.saveUser(info);
+                        if (id > 0){
+                            Toast.makeText(Registro.this, "REGISTRO GURADADO",Toast.LENGTH_LONG).show();
                         }else{
-                            if(Metodos.usuarios(list,usr,email)){
-                                Log.d(TAG,"esta ocupado mano");
-                                Toast.makeText(getApplicationContext(), "El nombre de usuario o correo, están ocupado, cambialo", Toast.LENGTH_LONG).show();
-                            }else{
-                                Metodos.fillInfo(info);
-                                info.setContras(lista);
-                                List2Json(info,list);
-                            }
+                            Toast.makeText(Registro.this, "ERROR AL GUARDAR REGISTRO",Toast.LENGTH_LONG).show();
                         }
+
                     }else{
                         Toast.makeText(getApplicationContext(), "Introduzca un correo válido", Toast.LENGTH_LONG).show();
                     }
@@ -161,100 +147,11 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
                 }
             }
         });
-    }
-    public void List2Json(MyInfo info,List<MyInfo> list){
-        Gson gson =null;
-        String json= null;
-        gson =new Gson();
-        list.add(info);
-        json =gson.toJson(list, ArrayList.class);
-        if (json == null)
-        {
-            Log.d(TAG, "Error json");
-        }
-        else
-        {
-            Log.d(TAG, json);
-            json=myDesUtil.cifrar(json);
-            Log.d(TAG, json);
-            writeFile(json);
-        }
-        Toast.makeText(getApplicationContext(), "Ok", Toast.LENGTH_LONG).show();
-    }
-    private boolean writeFile(String text){
-        File file =null;
-        FileOutputStream fileOutputStream =null;
-        try{
-            file=getFile();
-            fileOutputStream = new FileOutputStream( file );
-            fileOutputStream.write( text.getBytes(StandardCharsets.UTF_8) );
-            fileOutputStream.close();
-            Log.d(TAG, "Hola");
-            return true;
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    private File getFile(){
-        return new File(getDataDir(),archivo);
+
+
     }
 
-    public boolean Read(){
-        if(!isFileExits()){
-            return false;
-        }
-        File file = getFile();
-        FileInputStream fileInputStream = null;
-        byte[] bytes = null;
-        bytes = new byte[(int)file.length()];
-        try {
-            fileInputStream = new FileInputStream(file);
-            fileInputStream.read(bytes);
-            json=new String(bytes);
-            Log.d(TAG,json);
-            json= myDesUtil.desCifrar(json);
-            Log.d(TAG,json);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
-    private boolean isFileExits( )
-    {
-        File file = getFile( );
-        if( file == null )
-        {
-            return false;
-        }
-        return file.isFile() && file.exists();
-    }
-    public void json2List( String json)
-    {
-        Gson gson = null;
-        String mensaje = null;
-        if (json == null || json.length() == 0)
-        {
-            Toast.makeText(getApplicationContext(), "Error json null or empty", Toast.LENGTH_LONG).show();
-            return;
-        }
-        gson = new Gson();
-        Type listType = new TypeToken<ArrayList<MyInfo>>(){}.getType();
-        list = gson.fromJson(json, listType);
-        if (list == null || list.size() == 0 )
-        {
-            Toast.makeText(getApplicationContext(), "Error list is null or empty", Toast.LENGTH_LONG).show();
-            return;
-        }
-    }
+
 
     @Override
     public void onClick(View v) {
