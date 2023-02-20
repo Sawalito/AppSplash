@@ -13,6 +13,7 @@ import com.example.mysplash.json.MyData;
 import com.example.mysplash.json.MyInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DbContras extends UsuariosDBService{
@@ -48,15 +49,15 @@ public class DbContras extends UsuariosDBService{
         cursor = sqLiteDatabase.rawQuery("SELECT*FROM " + TABLE_CONTRA +" WHERE id = "+id,null);
         if( cursor == null )
         {
-            return null;
+            return new ArrayList<MyData>();
         }
         if( cursor.getCount() < 1)
         {
-            return null;
+            return new ArrayList<MyData>();
         }
         if( !cursor.moveToFirst() )
         {
-            return null;
+            return new ArrayList<MyData>();
         }
         Log.d(TAG, "" + cursor.getCount());
         contras = new ArrayList<MyData>( );
@@ -70,6 +71,40 @@ public class DbContras extends UsuariosDBService{
             contras.add(myData);
             cursor.moveToNext( );
         }
+        Log.d("Contraseñas",contras.toString());
         return contras;
     }
+    public boolean AlterContra(String sitio,String contra,int id){
+        boolean correcto = false;
+        UsuariosDBService usuariosDBService = new UsuariosDBService(context);
+        SQLiteDatabase db =usuariosDBService.getWritableDatabase();
+        try{
+            db.execSQL("UPDATE " + TABLE_CONTRA + " SET contra = '" + contra + "', user_c = '" + sitio+"' WHERE id='" + id + "'AND user_c='" +sitio+ "'");
+            correcto = true;
+        }catch(Exception ex){
+            ex.toString();
+        }
+        return correcto;
+    }
+
+    public boolean eliminarContacto(int id,String sitio,String contra) {
+
+        boolean correcto = false;
+
+        UsuariosDBService dbHelper = new UsuariosDBService(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        try {
+            db.execSQL("DELETE FROM " + TABLE_CONTRA+ " WHERE id = '" + id + "' AND contra ='" +contra+ "' AND user_c = '" +sitio+ "'");
+            correcto = true;
+        } catch (Exception ex) {
+            ex.toString();
+            correcto = false;
+        } finally {
+            db.close();
+        }
+
+        return correcto;
+    }
+
 }

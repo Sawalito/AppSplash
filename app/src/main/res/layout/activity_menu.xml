@@ -123,7 +123,7 @@
                                 android:layout_width="72dp"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
-                                android:text="Usuario"></TextView>
+                                android:text="Sitio"></TextView>
 
                             <EditText
                                 android:id="@+id/editText1"
@@ -193,9 +193,7 @@
         <ListView
             android:id="@+id/listViewId"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@color/black"
-            android:layout_gravity="center"/>
+            android:layout_height="match_parent" />
     </LinearLayout>
 
 </LinearLayout>

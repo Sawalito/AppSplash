@@ -2,6 +2,8 @@ package com.example.mysplash;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,11 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mysplash.MyAdapter.MyAdapter;
@@ -24,16 +24,7 @@ import com.example.mysplash.Service.DbUsuarios;
 import com.example.mysplash.des.MyDesUtil;
 import com.example.mysplash.json.MyData;
 import com.example.mysplash.json.MyInfo;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +41,7 @@ public class menu extends AppCompatActivity {
     public static MyInfo myInfo= null;
     EditText editText,editText1;
     Button button,button1,button2;
-
+    MyData data = new MyData();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Object object= null;
@@ -75,10 +66,12 @@ public class menu extends AppCompatActivity {
         button2=findViewById(R.id.buttonA);
         listView = (ListView) findViewById(R.id.listViewId);
 
-        DbContras dbContras = new DbContras(menu.this);
-        listo = new ArrayList<>();
-        listo = dbContras.getContras(myInfo.getId_usr());
 
+        DbContras dbContras = new DbContras(menu.this);
+        listo = dbContras.getContras(myInfo.getId_usr());
+        for(MyData contra : listo){
+            Log.d("Contras",contra.toString());
+        }
         MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
         listView.setAdapter(myAdapter);
         button.setEnabled(false);
@@ -86,13 +79,15 @@ public class menu extends AppCompatActivity {
         if(listo==null){
             Toast.makeText(getApplicationContext(), "Para agregar una contraseña de clic en el menú o en el boton +", Toast.LENGTH_LONG).show();
             Toast.makeText(getApplicationContext(), "Escriba en los campos", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), String.valueOf(myInfo.getId_usr()), Toast.LENGTH_LONG).show();
         }
         Toast.makeText(getApplicationContext(), "Para modificar o eliminar una contraseña de click en ella", Toast.LENGTH_LONG).show();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                editText.setText(listo.get(i).getUsuario());
-                editText1.setText(listo.get(i).getContra());
+                data = listo.get(i);
+                editText.setText(data.getUsuario());
+                editText1.setText(data.getContra());
                 pos=i;
                 button.setEnabled(true);
                 button1.setEnabled(true);
@@ -103,15 +98,20 @@ public class menu extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listo.remove(pos);
-                myInfo.setContras(listo);
-                MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
-                listView.setAdapter(myAdapter);
-                editText.setText("");
-                editText1.setText("");
-                Toast.makeText(getApplicationContext(), "Se eliminó la contraseña", Toast.LENGTH_LONG).show();
-                button.setEnabled(false);
-                button1.setEnabled(false);
+                DbContras dbContras = new DbContras(menu.this);
+                boolean id=dbContras.eliminarContacto(myInfo.getId_usr(),data.getUsuario(),data.getContra());
+                if(id){
+                    listo=dbContras.getContras(myInfo.getId_usr());
+                    MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
+                    listView.setAdapter(myAdapter);
+                    editText.setText("");
+                    editText1.setText("");
+                    Toast.makeText(getApplicationContext(), "Se eliminó la contraseña", Toast.LENGTH_LONG).show();
+                    button.setEnabled(false);
+                    button1.setEnabled(false);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Error al eliminar", Toast.LENGTH_LONG).show();
+                }
             }
         });
         button1.setOnClickListener(new View.OnClickListener() {
@@ -122,16 +122,21 @@ public class menu extends AppCompatActivity {
                 if(usr.equals("")||contra.equals("")){
                     Toast.makeText(getApplicationContext(), "Llene los campos", Toast.LENGTH_LONG).show();
                 }else{
-                    listo.get(pos).setUsuario(usr);
-                    listo.get(pos).setContra(contra);
-                    myInfo.setContras(listo);
-                    MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
-                    listView.setAdapter(myAdapter);
-                    editText.setText("");
-                    editText1.setText("");
-                    Toast.makeText(getApplicationContext(), "Se modificó la contraseña", Toast.LENGTH_LONG).show();
-                    button.setEnabled(false);
-                    button1.setEnabled(false);
+                    DbContras dbContras = new DbContras(menu.this);
+                    boolean id=dbContras.AlterContra(data.getUsuario(),data.getContra(),myInfo.getId_usr());
+                    if(id){
+                        listo = dbContras.getContras(myInfo.getId_usr());
+                        MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
+                        listView.setAdapter(myAdapter);
+                        editText.setText("");
+                        editText1.setText("");
+                        Toast.makeText(getApplicationContext(), "Se modificó la contraseña", Toast.LENGTH_LONG).show();
+                        button.setEnabled(false);
+                        button1.setEnabled(false);
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Error al modificar", Toast.LENGTH_LONG).show();
+                    }
+
                 }
             }
         });
@@ -147,12 +152,19 @@ public class menu extends AppCompatActivity {
                     myData.setContra(contra);
                     myData.setUsuario(usr);
                     myData.setId_usr(myInfo.getId_usr());
-                    listo.add(myData);
-                    MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
-                    listView.setAdapter(myAdapter);
-                    editText.setText("");
-                    editText1.setText("");
-                    Toast.makeText(getApplicationContext(), myData.getUsuario()+" "+myData.getContra(), Toast.LENGTH_LONG).show();
+                    DbContras dbContras = new DbContras(menu.this);
+                    long id=dbContras.saveContra(myData);
+                    if (id > 0){
+                        listo.add(myData);
+                        MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
+                        listView.setAdapter(myAdapter);
+                        editText.setText("");
+                        editText1.setText("");
+                        Toast.makeText(getApplicationContext(), myData.getUsuario()+" "+myData.getContra(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(menu.this, "REGISTRO GURADADO",Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(menu.this, "ERROR AL GUARDAR REGISTRO",Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
