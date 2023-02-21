@@ -3,6 +3,7 @@
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.mysplash.Service.DbUsuarios;
+import com.example.mysplash.Service.UsuariosDBService;
 import com.example.mysplash.des.MyDesUtil;
 import com.example.mysplash.json.MyInfo;
 import com.google.gson.Gson;
@@ -54,7 +57,9 @@ import java.util.List;
         email=findViewById(R.id.mail);
         button = findViewById(R.id.recuperar);
         button1 = findViewById(R.id.login);
-        list=activity_login.list;
+
+        DbUsuarios dbUsuarios = new DbUsuarios(Olvide.this);
+
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,42 +72,27 @@ import java.util.List;
             public void onClick(View view) {
                 usr = String.valueOf(usuario.getText());
                 correo= String.valueOf(email.getText());
+                MyInfo User = dbUsuarios.GetUsuario(usr,correo);
                 if(usr.equals("")&&email.equals("")){
                     Toast.makeText(getApplicationContext(), "Complete algún campo", Toast.LENGTH_LONG).show();
                 }else{
-                    int i=0;
-                    int j=0;
-                    for(MyInfo inf : list){
-                        if(inf.getUsuario().equals(usr) || inf.getCorreo().equals(correo)){
-                            correo=inf.getCorreo();
-                            String contra=inf.getPassword();
-                            String nueva = String.format("%d",(int)(Math.random()*1000));
-                            mensaje="<html><body><h1>Su contraseña era "+contra+" ahora es "+nueva+"</h1></body></html>";
-                            correo=myDesUtil.cifrar(correo);
-                            mensaje=myDesUtil.cifrar(mensaje);
-                            list.get(j).setPassword(nueva);
-                            Log.i(TAG,nueva);
-                            Log.i(TAG,list.get(j).getPassword());
-                            List2Json(list);
-                            i=1;
-                        }
-                        j++;
-                    }
-                    if(i==1){
-                        Log.i(TAG,usr);
-                        Log.i(TAG,correo);
-                        Log.i(TAG,mensaje);
-                        if( sendInfo( correo,mensaje ) )
-                        {
-                            Toast.makeText(getBaseContext() , "Se envío el texto" , Toast.LENGTH_LONG ).show();
-                            return;
-                        }
-                        Toast.makeText(getBaseContext() , "Error en el envío" , Toast.LENGTH_LONG ).show();
+                    if(User == null){
+                        Toast.makeText(getApplicationContext(), "El usuario o correo no existen", Toast.LENGTH_LONG).show();
                     }else{
-                        if(i==0){
-                            Log.i(TAG,"no hay usuarios");
-                            Toast.makeText(getBaseContext() , "No existen usuarios" , Toast.LENGTH_LONG ).show();
-                            return;
+                        correo=User.getCorreo();
+                        String contra=User.getPassword();
+                        String nueva = String.format("%d",(int)(Math.random()*1000));
+                        mensaje="<html><body><h1>Su contraseña era "+contra+" ahora es "+nueva+"</h1></body></html>";
+                        correo=myDesUtil.cifrar(correo);
+                        mensaje=myDesUtil.cifrar(mensaje);
+                        boolean f = dbUsuarios.AlterUser(usr,nueva);
+                        if(f){
+                            if(sendInfo(correo,mensaje)){
+                                Toast.makeText(getApplicationContext(), "Se ha enviado una contraseña a su correo", Toast.LENGTH_LONG).show();
+                            }else{Toast.makeText(getApplicationContext(), "Error con sendinfo", Toast.LENGTH_LONG).show();}
+
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Error al enviar correo", Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -150,76 +140,5 @@ import java.util.List;
 
           return true;
       }
-      public boolean Read(){
-          if(!isFileExits()){
-              return false;
-          }
-          File file = getFile();
-          FileInputStream fileInputStream = null;
-          byte[] bytes = null;
-          bytes = new byte[(int)file.length()];
-          try {
-              fileInputStream = new FileInputStream(file);
-              fileInputStream.read(bytes);
-              json=new String(bytes);
-              json= myDesUtil.desCifrar(json);
-              Log.d(TAG,json);
-          } catch (FileNotFoundException e) {
-              e.printStackTrace();
-          } catch (IOException e) {
-              e.printStackTrace();
-          }
-          return false;
-      }
-      private File getFile( )
-      {
-          return new File( getDataDir() , Registro.archivo );
-      }
-      private boolean isFileExits( )
-      {
-          File file = getFile( );
-          if( file == null )
-          {
-              return false;
-          }
-          return file.isFile() && file.exists();
-      }
-      public void List2Json(List<MyInfo> list){
-          Gson gson =null;
-          String json= null;
-          gson =new Gson();
-          json =gson.toJson(list, ArrayList.class);
-          if (json == null)
-          {
-              Log.d(TAG, "Error json");
-          }
-          else
-          {
-              Log.d(TAG, json);
-              json=myDesUtil.cifrar(json);
-              Log.d(TAG, json);
-              writeFile(json);
-          }
-      }
-      private boolean writeFile(String text){
-          File file =null;
-          FileOutputStream fileOutputStream =null;
-          try{
-              file=getFile();
-              fileOutputStream = new FileOutputStream( file );
-              fileOutputStream.write( text.getBytes(StandardCharsets.UTF_8) );
-              fileOutputStream.close();
-              Log.d(TAG, "Hola");
-              return true;
-          }
-          catch (FileNotFoundException e)
-          {
-              e.printStackTrace();
-          }
-          catch (IOException e)
-          {
-              e.printStackTrace();
-          }
-          return false;
-      }
+
 }

@@ -110,4 +110,45 @@ public class DbUsuarios extends UsuariosDBService{
         cursor.close();
         return null;
     }
+    public MyInfo GetUsuario(String user,String mail){
+        MyInfo info = new MyInfo();
+        UsuariosDBService usuariosDBService = new UsuariosDBService(context);
+        SQLiteDatabase db = usuariosDBService.getReadableDatabase();
+        Cursor cursor=null;
+        String query = "SELECT * FROM t_usuarios WHERE usuario = ? AND mail = ?";
+        String[] args = {user,mail};
+
+        cursor = db.rawQuery(query,args);
+        if (cursor.moveToFirst()) {
+            info.setId_usr(cursor.getInt(0));
+            info.setUsuario( cursor.getString( 1 ) );
+            info.setPassword(cursor.getString(2));
+            info.setCorreo(cursor.getString(3));
+            info.setBox1(cursor.getString(4));
+            info.setBox2(cursor.getString(5));
+            info.setBox3(cursor.getString(6));
+            info.setSexo(cursor.getInt(7));
+            info.setDate(cursor.getString(8));
+            info.setCel(cursor.getString(9));
+            info.setRegion(cursor.getString(10));
+            info.setActivado(cursor.getInt(11));
+            info.setNombre(cursor.getString(12));
+            return info;
+        }
+
+        cursor.close();
+        return null;
+    }
+    public boolean AlterUser(String user,String contra){
+        boolean correcto = false;
+        UsuariosDBService usuariosDBService = new UsuariosDBService(context);
+        SQLiteDatabase db =usuariosDBService.getWritableDatabase();
+        try{
+            db.execSQL("UPDATE " + TABLE_USERS + " SET paswd = '" + contra + "' WHERE usuario='" + user + "'");
+            correcto = true;
+        }catch(Exception ex){
+            ex.toString();
+        }
+        return correcto;
+    }
 }

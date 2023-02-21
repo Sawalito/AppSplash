@@ -74,15 +74,18 @@ public class DbContras extends UsuariosDBService{
         Log.d("Contraseñas",contras.toString());
         return contras;
     }
-    public boolean AlterContra(String sitio,String contra,int id){
+    public boolean AlterContra(String sitio,String contra,int id,int id_contra){
         boolean correcto = false;
         UsuariosDBService usuariosDBService = new UsuariosDBService(context);
         SQLiteDatabase db =usuariosDBService.getWritableDatabase();
         try{
-            db.execSQL("UPDATE " + TABLE_CONTRA + " SET contra = '" + contra + "', user_c = '" + sitio+"' WHERE id='" + id + "'AND user_c='" +sitio+ "'");
+            db.execSQL("UPDATE " + TABLE_CONTRA + " SET contra = '" + contra + "', user_c = '" +sitio+ "' WHERE id= '" + id + "' AND id_contra= '" +id_contra+ "'");
             correcto = true;
         }catch(Exception ex){
             ex.toString();
+            correcto=false;
+        } finally {
+            db.close();
         }
         return correcto;
     }

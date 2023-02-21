@@ -69,9 +69,9 @@ public class menu extends AppCompatActivity {
 
         DbContras dbContras = new DbContras(menu.this);
         listo = dbContras.getContras(myInfo.getId_usr());
-        for(MyData contra : listo){
+        /*for(MyData contra : listo){
             Log.d("Contras",contra.toString());
-        }
+        }*/
         MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
         listView.setAdapter(myAdapter);
         button.setEnabled(false);
@@ -123,7 +123,7 @@ public class menu extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Llene los campos", Toast.LENGTH_LONG).show();
                 }else{
                     DbContras dbContras = new DbContras(menu.this);
-                    boolean id=dbContras.AlterContra(data.getUsuario(),data.getContra(),myInfo.getId_usr());
+                    boolean id=dbContras.AlterContra(data.getUsuario(),data.getContra(),myInfo.getId_usr(),data.getId_contra());
                     if(id){
                         listo = dbContras.getContras(myInfo.getId_usr());
                         MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
@@ -152,10 +152,11 @@ public class menu extends AppCompatActivity {
                     myData.setContra(contra);
                     myData.setUsuario(usr);
                     myData.setId_usr(myInfo.getId_usr());
+                    Toast.makeText(getApplicationContext(), String.valueOf(myInfo.getId_usr()), Toast.LENGTH_LONG).show();
                     DbContras dbContras = new DbContras(menu.this);
                     long id=dbContras.saveContra(myData);
                     if (id > 0){
-                        listo.add(myData);
+                        listo=dbContras.getContras(myInfo.getId_usr());
                         MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
                         listView.setAdapter(myAdapter);
                         editText.setText("");
@@ -191,23 +192,25 @@ public class menu extends AppCompatActivity {
                 MyData myData = new MyData();
                 myData.setContra(contra);
                 myData.setUsuario(usr);
-                listo.add(myData);
-                MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
-                listView.setAdapter(myAdapter);
-                editText.setText("");
-                editText1.setText("");
-                Toast.makeText(getApplicationContext(), "Se agregó la contraseña", Toast.LENGTH_LONG).show();
+                myData.setId_usr(myInfo.getId_usr());
+                Toast.makeText(getApplicationContext(), String.valueOf(myInfo.getId_usr()), Toast.LENGTH_LONG).show();
+                DbContras dbContras = new DbContras(menu.this);
+                long p=dbContras.saveContra(myData);
+                if (p > 0){
+                    listo=dbContras.getContras(myInfo.getId_usr());
+                    MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
+                    listView.setAdapter(myAdapter);
+                    editText.setText("");
+                    editText1.setText("");
+                    Toast.makeText(getApplicationContext(), myData.getUsuario()+" "+myData.getContra(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(menu.this, "REGISTRO GURADADO",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(menu.this, "ERROR AL GUARDAR REGISTRO",Toast.LENGTH_LONG).show();
+                }
             }
-            return true;
         }
         if(id==R.id.item2){
-            int i =0;
-            for(MyInfo inf : list){
-                if(myInfo.getUsuario().equals(inf.getUsuario())){
-                    list.get(i).setContras(listo);
-                }
-                i++;
-            }
+            Toast.makeText(getApplicationContext(), "Ver API", Toast.LENGTH_LONG).show();
             //List2Json(myInfo,list);
             return true;
         }
