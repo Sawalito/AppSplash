@@ -3,7 +3,10 @@ package com.example.mysplash;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -48,5 +51,22 @@ public class MyMap extends AppCompatActivity implements OnMapReadyCallback, Goog
     public void onMapLongClick(@NonNull LatLng latLng) {
         Latitud.setText(""+latLng.latitude);
         Longitud.setText(""+latLng.longitude);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.api_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.Item1:
+                Intent intent= new Intent(MyMap.this,menu.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

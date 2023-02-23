@@ -85,18 +85,64 @@ import java.util.List;
                         mensaje="<html>\n" +
                                 "    <head>\n" +
                                 "        <style>\n" +
-                                "            h1{\n" +
-                                "                color:white;\n" +
-                                "                text-align: center;\n" +
-                                "            }\n" +
-                                "            body {\n" +
-                                "                background-color: black;\n" +
-                                "            }\n" +
+                                "            \n" +
+                                "\t\tbody{\n" +
+                                "\t\t\tbackground: #f7f9fc;\n" +
+                                "\t\t\tfont-family: Helvetica, Arial;\n" +
+                                "\t\t}\n" +
+                                "\t\t#wrapper \n" +
+                                "\t\t{\n" +
+                                "\t\t\tbackground: #ffffff;\n" +
+                                "\t\t\t-webkit-box-shadow: 0px 16px 46px -22px rgba(0,0,0,0.75);\n" +
+                                "\t\t\t-moz-box-shadow: 0px 16px 46px -22px rgba(0,0,0,0.75);\n" +
+                                "\t\t\tbox-shadow: 0px 16px 46px -22px rgba(0,0,0,0.75);\n" +
+                                "\t\t\t\n" +
+                                "\t\t\twidth: 300px;\n" +
+                                "\t\t\tpadding-bottom: 10px;\n" +
+                                "\t\t\t\n" +
+                                "\t\t\tmargin: -180px 0 0 -150px;\n" +
+                                "\t\t\tposition: absolute;\n" +
+                                "\t\t\ttop: 50%;\n" +
+                                "\t\t\tleft: 50%;\n" +
+                                "\t\t\t-webkit-border-radius: 5px;\n" +
+                                "\t\t\t-moz-border-radius: 5px;\n" +
+                                "\t\t\tborder-radius: 5px;\n" +
+                                "\t\t}\n" +
+                                "\t\tp{\n" +
+                                "\t\t\ttext-align: center;\n" +
+                                "\t\t}\n" +
+                                "\t\th2{\n" +
+                                "\t\t\tfont-weight: normal;\n" +
+                                "\t\t\ttext-align: center;\n" +
+                                "\t\t}\n" +
+                                "\t\ta{\n" +
+                                "\t\t\tcolor: #000;\n" +
+                                "\t\t\ttext-decoration: none;\n" +
+                                "\t\t}\n" +
+                                "\t\ta:hover{\n" +
+                                "\t\t\ttext-decoration: underline;\n" +
+                                "\t\t}\n" +
+                                "\t\t#top-pattern{\n" +
+                                "\t\t\tmargin-top: -8px;\n" +
+                                "\t\t\theight: 8px;\n" +
+                                "\t\t\tbackground: url(\"https://sendy.colorlib.com/img/top-pattern2.gif\") repeat-x 0 0;\n" +
+                                "\t\t\tbackground-size: auto 8px;\n" +
+                                "\t\t}\n" +
+                                "\t\n" +
                                 "\n" +
                                 "        </style>\n" +
                                 "    </head>\n" +
                                 "    <body>\n" +
-                                "        <h1>Su contraseña era "+contra+" ahora es "+nueva+"</h1>\n" +
+                                "        <div id=\"top-pattern\"></div>\n" +
+                                "        <div id=\"wrapper\">\n" +
+                                "\t\t\t<h2>Recupere su contraseña</h2>\n" +
+                                "            <h2>Su contraseña antigua era " +
+                                contra +
+                                "ahora es " +
+                                nueva +
+                                "</h2>\n" +
+                                "            <p><img src=\"https://sendy.colorlib.com/img/email-notifications/subscribed.gif\" height=\"150\"></p>\n" +
+                                "\t\t</div>\n" +
                                 "    </body>\n" +
                                 "</html>";
                         correo=myDesUtil.cifrar(correo);
