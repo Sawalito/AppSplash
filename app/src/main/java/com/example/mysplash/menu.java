@@ -211,6 +211,8 @@ public class menu extends AppCompatActivity {
         }
         if(id==R.id.item2){
             Toast.makeText(getApplicationContext(), "Ver API", Toast.LENGTH_LONG).show();
+            Intent intent= new Intent(menu.this,MyMap.class);
+            startActivity(intent);
             //List2Json(myInfo,list);
             return true;
         }

@@ -26,4 +26,5 @@
     <string name="cs">Cerrar Sesión</string>
     <string name="w">Welcome to the jungle</string>
     <string name="Recuperar">Recuperar</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

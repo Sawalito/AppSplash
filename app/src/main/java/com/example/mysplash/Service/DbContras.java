@@ -78,8 +78,13 @@ public class DbContras extends UsuariosDBService{
         boolean correcto = false;
         UsuariosDBService usuariosDBService = new UsuariosDBService(context);
         SQLiteDatabase db =usuariosDBService.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("contra",contra);
+        values.put("user_c",sitio);
+
         try{
-            db.execSQL("UPDATE " + TABLE_CONTRA + " SET contra = '" + contra + "', user_c = '" +sitio+ "' WHERE id= '" + id + "' AND id_contra= '" +id_contra+ "'");
+            db.execSQL("UPDATE " + TABLE_CONTRA + " SET contra = '" + contra + "', user_c = '" +sitio+ "' WHERE id = '" + id + "' AND id_contra = '" +id_contra+ "'");
             correcto = true;
         }catch(Exception ex){
             ex.toString();
@@ -109,5 +114,12 @@ public class DbContras extends UsuariosDBService{
 
         return correcto;
     }
+    public void AlterContraS(String sitio,String contra,int id,int id_contra){
+        UsuariosDBService usuariosDBService = new UsuariosDBService(context);
+        SQLiteDatabase db =usuariosDBService.getWritableDatabase();
 
+        ContentValues values = new ContentValues();
+        values.put("contra",contra);
+        values.put("user_c",sitio);
+    }
 }

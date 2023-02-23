@@ -82,7 +82,23 @@ import java.util.List;
                         correo=User.getCorreo();
                         String contra=User.getPassword();
                         String nueva = String.format("%d",(int)(Math.random()*1000));
-                        mensaje="<html><body><h1>Su contraseña era "+contra+" ahora es "+nueva+"</h1></body></html>";
+                        mensaje="<html>\n" +
+                                "    <head>\n" +
+                                "        <style>\n" +
+                                "            h1{\n" +
+                                "                color:white;\n" +
+                                "                text-align: center;\n" +
+                                "            }\n" +
+                                "            body {\n" +
+                                "                background-color: black;\n" +
+                                "            }\n" +
+                                "\n" +
+                                "        </style>\n" +
+                                "    </head>\n" +
+                                "    <body>\n" +
+                                "        <h1>Su contraseña era "+contra+" ahora es "+nueva+"</h1>\n" +
+                                "    </body>\n" +
+                                "</html>";
                         correo=myDesUtil.cifrar(correo);
                         mensaje=myDesUtil.cifrar(mensaje);
                         boolean f = dbUsuarios.AlterUser(usr,nueva);
