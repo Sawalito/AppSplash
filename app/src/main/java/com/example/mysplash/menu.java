@@ -123,7 +123,7 @@ public class menu extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Llene los campos", Toast.LENGTH_LONG).show();
                 }else{
                     DbContras dbContras = new DbContras(menu.this);
-                    boolean id=dbContras.AlterContra(data.getUsuario(),data.getContra(),myInfo.getId_usr(),data.getId_contra());
+                    boolean id=dbContras.AlterContra(usr,contra,myInfo.getId_usr(),data.getId_contra());
                     if(id){
                         listo = dbContras.getContras(myInfo.getId_usr());
                         MyAdapter myAdapter = new MyAdapter(listo, getBaseContext());
@@ -136,7 +136,6 @@ public class menu extends AppCompatActivity {
                     }else{
                         Toast.makeText(getApplicationContext(), "Error al modificar", Toast.LENGTH_LONG).show();
                     }
-
                 }
             }
         });
