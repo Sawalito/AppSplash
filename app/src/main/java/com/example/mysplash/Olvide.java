@@ -37,6 +37,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
   public class Olvide extends AppCompatActivity {
       public static List<MyInfo> list;
@@ -81,7 +82,13 @@ import java.util.List;
                     }else{
                         correo=User.getCorreo();
                         String contra=User.getPassword();
-                        String nueva = String.format("%d",(int)(Math.random()*1000));
+                        String nueva = "";
+                        for (int i = 0; i < 5; i++) {
+                            Random random = new Random();
+                            char ch = (char) (random.nextInt(26) + 'a');
+                            nueva += String.valueOf(ch);
+                        }
+                        nueva += String.format("%d",(int)(Math.random()*1000));
                         mensaje="<html>\n" +
                                 "    <head>\n" +
                                 "        <style>\n" +
@@ -138,7 +145,7 @@ import java.util.List;
                                 "\t\t\t<h2>Recupere su contraseña</h2>\n" +
                                 "            <h2>Su contraseña antigua era " +
                                 contra +
-                                "ahora es " +
+                                " ahora es " +
                                 nueva +
                                 "</h2>\n" +
                                 "            <p><img src=\"https://sendy.colorlib.com/img/email-notifications/subscribed.gif\" height=\"150\"></p>\n" +
